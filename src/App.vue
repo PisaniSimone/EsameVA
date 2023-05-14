@@ -1,11 +1,19 @@
 <template>
   <div id="app">
-
+    <MC2_first_part></MC2_first_part>
   </div>
 </template>
 
 <script>
 
+import MC2_first_part from "@/components/MC2_first_part.vue";
+
+export default {
+    name: 'App',
+    components:{
+        MC2_first_part
+    }
+}
 
 </script>
 
