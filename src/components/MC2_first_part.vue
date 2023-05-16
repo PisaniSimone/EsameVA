@@ -98,7 +98,6 @@ export default {
                     this.transaction.push(mergedObj);
                 }
             }
-            console.log(this.transaction)
             return this.transaction;
         }
     }
