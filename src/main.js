@@ -1,4 +1,12 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from "vue";
+import App from "./App.vue";
+import BootstrapVueNext from "bootstrap-vue-next";
 
-createApp(App).mount('#app')
+// Optional, since every component imports their Bootstrap functionality
+// the following line is not necessary
+// import 'bootstrap'
+
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-vue-next/dist/bootstrap-vue-next.css";
+
+createApp(App).use(BootstrapVueNext).mount("#app");
