@@ -1,6 +1,5 @@
 <template>
-    <h1>La mia prima heatmap</h1>
-    <div id="my_dataviz"></div>
+    <MC2_heatmap :transDayLoc="this.transDayLoc"></MC2_heatmap>
 </template>
 
 <script>
@@ -9,17 +8,19 @@
 import loyaltydata from "/public/data/loyalty_data.json";
 import creditdata from "/public/data/cc_data.json";
 import {crossfilter} from "crossfilter/crossfilter";
+import MC2_heatmap from "@/components/MC2_heatmap.vue";
 
 let cf;
 let dDateLoc;
-const d3 = require("d3");
 
 
 export default {
     name: "MC2_first_part",
+    components: {MC2_heatmap},
     data() {
         return {
             transaction: [],
+            transDayLoc: [],
         };
     },
     mounted() {
@@ -50,69 +51,8 @@ export default {
         dDateLoc = cf.dimension(function (d) {
             return [d.date, d.location]
         });
-        const result = dDateLoc.group().reduceCount().all().map(v => [v.key[0].split("/")[1], v.key[1], v.value]);
-
-        // set the dimensions and margins of the graph
-        const margin = {top: 30, right: 30, bottom: 30, left: 130},
-            width = 650 - margin.left - margin.right,
-            height = 450 - margin.top - margin.bottom;
-
-
-        // append the svg object to the body of the page
-        const svg = d3.select("#my_dataviz")
-            .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", `translate(${margin.left},${margin.top})`);
-
-        // Labels of row and columns
-        const myGroups = [];
-        const myVars = []
-        result.forEach((element) => {
-            myGroups.push(+element[0]);
-            myVars.push(element[1]);
-        });
-
-        // Build X scales and axis:
-        const x = d3.scaleBand()
-            .range([0, width])
-            .domain(myGroups)
-            .padding(0.01);
-        svg.append("g")
-            .attr("transform", `translate(0, ${height})`)
-            .call(d3.axisBottom(x))
-
-        // Build X scales and axis:
-        const y = d3.scaleBand()
-            .range([height, 0])
-            .domain(myVars)
-            .padding(0.01);
-        svg.append("g")
-            .call(d3.axisLeft(y));
-
-        // Build color scale
-        const myColor = d3.scaleLinear()
-            .range(["white", "blue"])
-            .domain([1, 100])
-
-        //Read the data
-        svg.selectAll()
-            .data(result, function (d, i) {
-                return result[i][0] + ':' + result[i][1];
-            })
-            .join("rect")
-            .attr("x", function (d, i) {
-                return x(+result[i][0])
-            })
-            .attr("y", function (d, i) {
-                return y(result[i][1])
-            })
-            .attr("width", x.bandwidth())
-            .attr("height", y.bandwidth())
-            .style("fill", function (d, i) {
-                return myColor(result[i][2])
-            })
+        this.transDayLoc = dDateLoc.group().reduceCount().all().map(v => [v.key[0].split("/")[1], v.key[1], v.value]);
+        console.log(this.transDayLoc)
     },
     methods: {
         merge_data(data1, data2) {
