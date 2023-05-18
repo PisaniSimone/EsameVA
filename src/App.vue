@@ -1,10 +1,13 @@
 <template>
+    <header>
+        <b-navbar type="dark" variant="light">
+            <b-navbar-brand href="#">NavBar</b-navbar-brand>
+        </b-navbar>
+    </header>
     <div id="app">
         <b-container>
             <b-row class="plots">
-                <b-col>
-                    <MC2_first_part></MC2_first_part>
-                </b-col>
+                <MC2_first_part></MC2_first_part>
             </b-row>
         </b-container>
     </div>
@@ -31,10 +34,6 @@ export default {
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
-    margin-top: 60px;
 }
-svg text {
-    font: 7px sans-serif;
-    text-anchor: center;
-}
+
 </style>

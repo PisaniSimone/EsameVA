@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <b-col cols="7" id="my_heatmap">
         <svg id="my_dataviz"></svg>
-    </div>
+    </b-col>
 </template>
 
 <script>
@@ -10,11 +10,6 @@ export default {
     name: "MC2_heatmap",
     props: {
         transDayLoc: Array,
-    },
-    data(){
-        return{
-            miei_Record: [],
-        }
     },
     mounted() {
         this.buildHeatmap(this.transDayLoc);
@@ -28,8 +23,8 @@ export default {
         buildHeatmap(data) {
             // set the dimensions and margins of the graph
             const margin = {top: 30, right: 30, bottom: 30, left: 130},
-                width = 650 - margin.left - margin.right,
-                height = 450 - margin.top - margin.bottom;
+                width = 600 - margin.left - margin.right,
+                height = 400 - margin.top - margin.bottom;
 
 
             // append the svg object to the body of the page
@@ -66,10 +61,37 @@ export default {
 
             // Build color scale
             const myColor = d3.scaleLinear()
-                .range(["white", "blue"])
-                .domain([1, 100])
+                .range(["yellow", "red"])
+                .domain([null, d3.max(data, function (d){ return d[2];})])
+
+
+            const tooltip = d3.select("#my_heatmap")
+                .append("div")
+                .style("opacity", 0)
+                .attr("id", "tooltip")
+                .style("background-color", "white")
+                .style("border", "solid")
+                .style("border-width", "2px")
+                .style("border-radius", "5px")
+                .style("padding", "5px")
+
+            // Three function that change the tooltip when user hover / move / leave a cell
+            const mouseover = function() {
+                tooltip.style("opacity", 1)
+            }
+            const mousemove = function(event,d) {
+                tooltip
+                    .html("Numero di transazioni: " + d[2])
+                    .style("position", "absolute")
+                    .style("left", (event.x) + "px")
+                    .style("top", (event.y) + "px")
+            }
+            const mouseleave = function() {
+                tooltip.style("opacity", 0)
+            }
 
             //Read the data
+
             svg.selectAll()
                 .data(data, function (d, i) {
                     return data[i][0] + ':' + data[i][1];
@@ -86,6 +108,9 @@ export default {
                 .style("fill", function (d, i) {
                     return myColor(data[i][2])
                 })
+                .on("mouseover", mouseover)
+                .on("mousemove", mousemove)
+                .on("mouseleave", mouseleave)
         }
     }
 }
