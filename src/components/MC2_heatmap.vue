@@ -9,22 +9,22 @@ const d3 = require("d3");
 export default {
     name: "MC2_heatmap",
     props: {
-        transDayLoc: Array,
+        data_for_heatmap: Array,
     },
     mounted() {
-        this.buildHeatmap(this.transDayLoc);
+        this.buildHeatmap(this.data_for_heatmap);
     },
     watch:{
-        transDayLoc(newVal){
+        data_for_heatmap(newVal){
             this.buildHeatmap(newVal)
         }
     },
     methods: {
         buildHeatmap(data) {
             // set the dimensions and margins of the graph
-            const margin = {top: 30, right: 30, bottom: 30, left: 130},
-                width = 600 - margin.left - margin.right,
-                height = 400 - margin.top - margin.bottom;
+            const margin = {top: 30, right: 30, bottom: 30, left: 200},
+                width = 900 - margin.left - margin.right,
+                height = 700 - margin.top - margin.bottom;
 
 
             // append the svg object to the body of the page
@@ -43,7 +43,7 @@ export default {
             const myGroups = [];
             const myVars = []
             data.forEach((element) => {
-                myGroups.push(element[0]);
+                myGroups.push("Gen "+element[0]);
                 myVars.push(element[1]);
             });
 
@@ -56,6 +56,7 @@ export default {
                 .data([0])
                 .join("g")
                 .attr("class", "x")
+                .style("font-size", 13)
                 .attr("transform", "translate(0," + height + ")")
                 .call(d3.axisBottom(x).tickSize(0))
                 .select(".domain").remove()
@@ -65,12 +66,15 @@ export default {
                 .range([ height, 0 ])
                 .domain(myVars)
                 .padding(0.05);
+
             gg.selectAll("g.y")
                 .data([0])
                 .join("g")
                 .attr("class", "y")
+                .style("font-size", 13)
                 .call(d3.axisLeft(y).tickSize(0))
                 .select(".domain").remove()
+
 
             // Build color scale
             const myColor = d3.scaleLinear()
@@ -100,7 +104,7 @@ export default {
             }
             const mousemove = function(event,d) {
                 tooltip
-                    .html("Numero di transazioni: " + d[2])
+                    .html("Number of transation on <strong>Gen "+d[0] +"</strong> at <strong>"+d[1]+"</strong>: <strong>" + d[2]+"</strong>")
                     .style("position", "absolute")
                     .style("left", (event.x)+20 + "px")
                     .style("top", (event.y) + "px")
@@ -110,7 +114,7 @@ export default {
                     .style("opacity", 0)
                 d3.select(this)
                     .style("stroke", "none")
-                    .style("opacity", 0.8)
+                    .style("opacity", 1)
             }
 
             //Read the data
@@ -124,7 +128,7 @@ export default {
                 .data((d)=>[d])
                 .join("rect")
                 .attr("x", function (d) {
-                    return x(d[0])
+                    return x("Gen "+d[0])
                 })
                 .attr("y", function (d) {
                     return y(d[1])

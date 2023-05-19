@@ -1,15 +1,13 @@
 <template>
     <header>
-        <b-navbar type="dark" variant="light">
+        <b-navbar type="dark" variant="danger" class="border-23 border-bottom border-dark">
             <b-navbar-brand href="#">NavBar</b-navbar-brand>
         </b-navbar>
     </header>
     <div id="app">
-        <b-container>
-            <b-row class="plots">
-                <MC2_first_part></MC2_first_part>
-            </b-row>
-        </b-container>
+
+        <MC2_first_part></MC2_first_part>
+
     </div>
 </template>
 

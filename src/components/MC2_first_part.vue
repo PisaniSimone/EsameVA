@@ -1,9 +1,39 @@
 <template>
-    <MC2_heatmap :transDayLoc="this.transDayLoc"></MC2_heatmap>
+    <b-container fluid>
+        <b-row class="plots pt-5" style="background-color: #F5F5F5">
+            <b-col cols="7">
+                <b-form-group label="Chose a view mode:" v-slot="{ ariaDescribedby }">
+                    <b-form-radio-group
+                            id="btn-radios-1"
+                            v-model="radio_heatmap.selected"
+                            :options="radio_heatmap.options"
+                            :aria-describedby="ariaDescribedby"
+                            name="radios-btn-default"
+                            buttons
+                    ></b-form-radio-group>
+                </b-form-group>
+            </b-col>
+            <b-col cols="3" class="offset-1">
+                <b-form-group label="Chose a place to focus on:" label-cols="12" content-cols="12">
+                    <b-form-select
+                            v-model="select_focus.selected"
+                            :options="select_focus.options"
+                    ></b-form-select>
+                </b-form-group>
+            </b-col>
+            <MC2_heatmap :data_for_heatmap="this.data_for_heatmap"></MC2_heatmap>
+            <b-col cols="5">
+                <b-row>
+                    <b-col cols="12">primo grafico</b-col>
+                    <b-col cols="12">secondo grafico</b-col>
+                </b-row>
+            </b-col>
+        </b-row>
+    </b-container>
+
 </template>
 
 <script>
-/*import crossfilter from 'crossfilter';*/
 
 import loyaltydata from "/public/data/loyalty_data.json";
 import creditdata from "/public/data/cc_data.json";
@@ -12,6 +42,10 @@ import MC2_heatmap from "@/components/MC2_heatmap.vue";
 
 let cf;
 let dDateLoc;
+let dLoc;
+
+let transactions_credit_loyalty = [];
+let place_transactions_percentage = []
 
 
 export default {
@@ -19,69 +53,110 @@ export default {
     components: {MC2_heatmap},
     data() {
         return {
-            transaction: [],
-            transDayLoc: [],
+            data_for_heatmap: [],
+            radio_heatmap: {
+                selected: "everything",
+                options: [
+                    {text: "All", value: "everything"},
+                    {text: "Only credit cards", value: "credit"},
+                    {text: "Only loyalty cards", value: "loyalty"},
+                ]
+            },
+            select_focus: {
+                selected: String,
+                options: []
+            }
         };
     },
     mounted() {
+        /*Inizializzo i dati e la pagina iniziale*/
         const loyalty_card = loyaltydata.map((d) => {
-            const l = {
+            d.loyaltynum = String;
+            return {
                 date: d.timestamp,
                 location: d.location,
                 price: +d.price,
                 loyaltyId: d.loyaltynum,
             };
-            return l;
         });
 
         const credit_card = creditdata.map((d) => {
-            const c = {
+            d.last4ccnum = Number;
+            return {
                 date: d.timestamp.split(" ")[0],
                 time: d.timestamp.split(" ")[1],
                 location: d.location,
                 price: +d.price,
                 last4num: +d.last4ccnum,
             };
-            return c;
         });
 
         this.merge_data(credit_card, loyalty_card);
-        cf = crossfilter(this.transaction);
+        cf = crossfilter(transactions_credit_loyalty);
+        dDateLoc = cf.dimension(d => [d.date, d.location]);
+        dLoc = cf.dimension(d => d.location)
 
-        dDateLoc = cf.dimension(function (d) {
-            return [d.date, d.location]
-        });
-        this.transDayLoc = dDateLoc.group().reduceCount().all().map(v => [v.key[0].split("/")[1], v.key[1], v.value]);
+
+        this.data_for_heatmap = dDateLoc.group().reduceCount().all().map(v => [v.key[0].split("/")[1], v.key[1], v.value]);
+        this.select_focus.options = dLoc.group().reduceCount().all().map(v => v.key);
+        this.select_focus.selected = this.select_focus.options[0];
+
+        this.check_single_place(this.select_focus.selected);
+
+
+    },
+    watch: {
+        radio_heatmap: {
+            handler(newVal) {
+                if (newVal.selected === "everything") {
+                    cf = crossfilter(transactions_credit_loyalty);
+                } else if (newVal.selected === "credit") {
+                    cf = crossfilter(transactions_credit_loyalty.filter(d => d.loyaltyId !== null));
+                } else {
+                    cf = crossfilter(transactions_credit_loyalty.filter(d => d.last4num !== null));
+                }
+                dDateLoc = cf.dimension((d) => [d.date, d.location]);
+                this.data_for_heatmap = dDateLoc.group().reduceCount().all().map(v => [v.key[0].split("/")[1], v.key[1], v.value]);
+            },
+            deep: true,
+        },
+        select_focus: {
+            handler(newVal) {
+                this.check_single_place(newVal.selected);
+            },
+            deep: true,
+        },
     },
     methods: {
         merge_data(data1, data2) {
+            let mergedObj;
             let flag;
             for (let i in data1) {
                 flag = false;
                 for (let j in data2) {
                     if (
-                        data1[i].price == data2[j].price &&
-                        data1[i].date == data2[j].date &&
-                        data1[i].location == data2[j].location
+                        data1[i].price === data2[j].price &&
+                        data1[i].date === data2[j].date &&
+                        data1[i].location === data2[j].location
                     ) {
-                        var mergedObj = {...data2[j], ...data1[i]};
-                        this.transaction.push(mergedObj);
+                        mergedObj = {...data2[j], ...data1[i]};
+                        transactions_credit_loyalty.push(mergedObj);
                         flag = true;
                         break;
                     }
                 }
                 if (!flag) {
                     mergedObj = {...data1[i], loyaltyId: null};
-                    this.transaction.push(mergedObj);
+                    transactions_credit_loyalty.push(mergedObj);
                 }
             }
             for (let i in data2) {
                 flag = false;
                 for (let j in data1) {
                     if (
-                        data2[i].price == data1[j].price &&
-                        data2[i].date == data1[j].date &&
-                        data2[i].location == data1[j].location
+                        data2[i].price === data1[j].price &&
+                        data2[i].date === data1[j].date &&
+                        data2[i].location === data1[j].location
                     ) {
                         flag = true;
                         break;
@@ -89,11 +164,25 @@ export default {
                 }
                 if (!flag) {
                     mergedObj = {...data2[i], time: null, last4num: null};
-                    this.transaction.push(mergedObj);
+                    transactions_credit_loyalty.push(mergedObj);
                 }
             }
-            return this.transaction;
+            return transactions_credit_loyalty;
         },
+
+        check_single_place(place) {
+            place_transactions_percentage = [];
+
+            let first_filter = transactions_credit_loyalty.filter(d => d.location === place);
+            let second_filter = first_filter.filter(d => d.last4num !== null && d.loyaltyId !== null)
+            place_transactions_percentage.push(["complete", second_filter.length])
+
+            second_filter = first_filter.filter(d => d.last4num === null)
+            place_transactions_percentage.push(["loyalty", second_filter.length])
+
+            second_filter = first_filter.filter(d => d.loyaltyId === null)
+            place_transactions_percentage.push(["credit", second_filter.length])
+        }
     },
 };
 </script>
