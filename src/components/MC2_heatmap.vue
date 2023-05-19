@@ -1,6 +1,6 @@
 <template>
     <b-col cols="7" id="my_heatmap">
-        <svg id="my_dataviz"></svg>
+        <svg id="my_heatmap_dataviz"></svg>
     </b-col>
 </template>
 
@@ -28,7 +28,7 @@ export default {
 
 
             // append the svg object to the body of the page
-            const svg = d3.select("#my_dataviz")
+            const svg = d3.select("#my_heatmap_dataviz")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
 
@@ -104,7 +104,7 @@ export default {
             }
             const mousemove = function(event,d) {
                 tooltip
-                    .html("Number of transation on <strong>Gen "+d[0] +"</strong> at <strong>"+d[1]+"</strong>: <strong>" + d[2]+"</strong>")
+                    .html("Number of transations on <strong>Gen "+d[0] +"</strong> at <strong>"+d[1]+"</strong>: <strong>" + d[2]+"</strong>")
                     .style("position", "absolute")
                     .style("left", (event.x)+20 + "px")
                     .style("top", (event.y) + "px")

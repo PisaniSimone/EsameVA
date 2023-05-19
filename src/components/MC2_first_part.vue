@@ -24,7 +24,7 @@
             <MC2_heatmap :data_for_heatmap="this.data_for_heatmap"></MC2_heatmap>
             <b-col cols="5">
                 <b-row>
-                    <b-col cols="12">primo grafico</b-col>
+                    <MC2_piechart :data_for_piechart="this.data_for_piechart"></MC2_piechart>
                     <b-col cols="12">secondo grafico</b-col>
                 </b-row>
             </b-col>
@@ -39,21 +39,22 @@ import loyaltydata from "/public/data/loyalty_data.json";
 import creditdata from "/public/data/cc_data.json";
 import {crossfilter} from "crossfilter/crossfilter";
 import MC2_heatmap from "@/components/MC2_heatmap.vue";
+import MC2_piechart from "@/components/MC2_piechart.vue";
 
 let cf;
 let dDateLoc;
 let dLoc;
 
 let transactions_credit_loyalty = [];
-let place_transactions_percentage = []
 
 
 export default {
     name: "MC2_first_part",
-    components: {MC2_heatmap},
+    components: {MC2_piechart, MC2_heatmap},
     data() {
         return {
             data_for_heatmap: [],
+            data_for_piechart: {},
             radio_heatmap: {
                 selected: "everything",
                 options: [
@@ -111,9 +112,9 @@ export default {
                 if (newVal.selected === "everything") {
                     cf = crossfilter(transactions_credit_loyalty);
                 } else if (newVal.selected === "credit") {
-                    cf = crossfilter(transactions_credit_loyalty.filter(d => d.loyaltyId !== null));
+                    cf = crossfilter(transactions_credit_loyalty.filter(d => d.loyaltyId === null));
                 } else {
-                    cf = crossfilter(transactions_credit_loyalty.filter(d => d.last4num !== null));
+                    cf = crossfilter(transactions_credit_loyalty.filter(d => d.last4num === null));
                 }
                 dDateLoc = cf.dimension((d) => [d.date, d.location]);
                 this.data_for_heatmap = dDateLoc.group().reduceCount().all().map(v => [v.key[0].split("/")[1], v.key[1], v.value]);
@@ -171,17 +172,17 @@ export default {
         },
 
         check_single_place(place) {
-            place_transactions_percentage = [];
+            this.data_for_piechart = {};
 
             let first_filter = transactions_credit_loyalty.filter(d => d.location === place);
             let second_filter = first_filter.filter(d => d.last4num !== null && d.loyaltyId !== null)
-            place_transactions_percentage.push(["complete", second_filter.length])
+            this.data_for_piechart["Transactions with both loyalty and credit card"]= second_filter.length;
 
             second_filter = first_filter.filter(d => d.last4num === null)
-            place_transactions_percentage.push(["loyalty", second_filter.length])
+            this.data_for_piechart["Transactions with only loyalty card"]= second_filter.length;
 
             second_filter = first_filter.filter(d => d.loyaltyId === null)
-            place_transactions_percentage.push(["credit", second_filter.length])
+            this.data_for_piechart["Transactions with only credit card"]= second_filter.length;
         }
     },
 };
