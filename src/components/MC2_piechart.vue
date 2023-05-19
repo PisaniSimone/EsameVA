@@ -32,8 +32,6 @@ export default {
     },
     methods: {
         buildpiechart(data) {
-            console.log(data)
-            console.log(this.data1)
             // set the dimensions and margins of the graph
             let width = 350
             let height = 350
@@ -76,12 +74,10 @@ export default {
             const arcGenerator = d3.arc()
                 .innerRadius(0)
                 .outerRadius(radius)
-                .cornerRadius(10)
 
             const arcGenerator2 = d3.arc()
                 .innerRadius(0)
                 .outerRadius(radius+10)
-                .cornerRadius(10)
 
             // map to data
             const u = svg.selectAll("path")
