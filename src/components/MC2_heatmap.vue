@@ -23,8 +23,8 @@ export default {
         buildHeatmap(data) {
             // set the dimensions and margins of the graph
             const margin = {top: 30, right: 30, bottom: 30, left: 200},
-                width = 900 - margin.left - margin.right,
-                height = 700 - margin.top - margin.bottom;
+                width = 1000 - margin.left - margin.right,
+                height = 800 - margin.top - margin.bottom;
 
 
             // append the svg object to the body of the page
@@ -56,7 +56,7 @@ export default {
                 .data([0])
                 .join("g")
                 .attr("class", "x")
-                .style("font-size", 13)
+                .style("font-size", 14)
                 .attr("transform", "translate(0," + height + ")")
                 .call(d3.axisBottom(x).tickSize(0))
                 .select(".domain").remove()
@@ -71,7 +71,7 @@ export default {
                 .data([0])
                 .join("g")
                 .attr("class", "y")
-                .style("font-size", 13)
+                .style("font-size", 14)
                 .call(d3.axisLeft(y).tickSize(0))
                 .select(".domain").remove()
 
@@ -92,12 +92,13 @@ export default {
                 .style("border", "solid")
                 .style("border-width", "2px")
                 .style("border-radius", "5px")
-                .style("padding", "5px")
+                .style("position", "absolute")
 
             // Three function that change the tooltip when user hover / move / leave a cell
             const mouseover = function() {
                 tooltip
                     .style("opacity", 1)
+                    .style("padding", "5px")
                 d3.select(this)
                     .style("stroke", "black")
                     .style("opacity", 1)
@@ -105,13 +106,13 @@ export default {
             const mousemove = function(event,d) {
                 tooltip
                     .html("Number of transations on <strong>Gen "+d[0] +"</strong> at <strong>"+d[1]+"</strong>: <strong>" + d[2]+"</strong>")
-                    .style("position", "absolute")
                     .style("left", (event.x)+20 + "px")
                     .style("top", (event.y) + "px")
             }
             const mouseleave = function() {
                 tooltip
                     .style("opacity", 0)
+                    .style("padding", null)
                 d3.select(this)
                     .style("stroke", "none")
                     .style("opacity", 1)

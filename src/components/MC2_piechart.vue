@@ -93,24 +93,24 @@ export default {
                 .style("border", "solid")
                 .style("border-width", "2px")
                 .style("border-radius", "10px")
-                .style("padding", "5px")
                 .style("position", "absolute")
 
             const mouseover2 = function() {
                 tooltip2
                     .style("opacity", 1)
+                    .style("padding", "5px")
                 d3.select(this).transition().duration(1000).attr("d", arcGenerator2);
             }
             const mousemove2 = function(event,d) {
                 tooltip2
                     .html(d.data[0]+": <strong>"+d.data[1]+"</strong>")
-                    .style("position", "absolute")
                     .style("left", (event.x)+20 + "px")
                     .style("top", (event.y) + "px")
             }
             const mouseleave2 = function() {
                 tooltip2
                     .style("opacity", 0)
+                    .style("padding", null)
                 d3.select(this).transition().duration(200).attr("d", arcGenerator);
             }
 
