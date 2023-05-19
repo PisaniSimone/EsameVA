@@ -52,7 +52,6 @@ export default {
             return [d.date, d.location]
         });
         this.transDayLoc = dDateLoc.group().reduceCount().all().map(v => [v.key[0].split("/")[1], v.key[1], v.value]);
-        console.log(this.transDayLoc)
     },
     methods: {
         merge_data(data1, data2) {

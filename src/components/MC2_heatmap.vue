@@ -31,33 +31,46 @@ export default {
             const svg = d3.select("#my_dataviz")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
-                .append("g")
+
+
+            const gg = svg.selectAll("g.graph")
+                .data([0])
+                .join("g")
+                .attr("class", "graph")
                 .attr("transform", `translate(${margin.left},${margin.top})`);
 
             // Labels of row and columns
             const myGroups = [];
             const myVars = []
             data.forEach((element) => {
-                myGroups.push(+element[0]);
+                myGroups.push(element[0]);
                 myVars.push(element[1]);
             });
 
             // Build X scales and axis:
             const x = d3.scaleBand()
-                .range([0, width])
+                .range([ 0, width ])
                 .domain(myGroups)
-                .padding(0.01);
-            svg.append("g")
-                .attr("transform", `translate(0, ${height})`)
-                .call(d3.axisBottom(x))
+                .padding(0.05);
+            gg.selectAll("g.x")
+                .data([0])
+                .join("g")
+                .attr("class", "x")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x).tickSize(0))
+                .select(".domain").remove()
 
             // Build X scales and axis:
             const y = d3.scaleBand()
-                .range([height, 0])
+                .range([ height, 0 ])
                 .domain(myVars)
-                .padding(0.01);
-            svg.append("g")
-                .call(d3.axisLeft(y));
+                .padding(0.05);
+            gg.selectAll("g.y")
+                .data([0])
+                .join("g")
+                .attr("class", "y")
+                .call(d3.axisLeft(y).tickSize(0))
+                .select(".domain").remove()
 
             // Build color scale
             const myColor = d3.scaleLinear()
@@ -66,7 +79,9 @@ export default {
 
 
             const tooltip = d3.select("#my_heatmap")
-                .append("div")
+                .selectAll("div")
+                .data([0])
+                .join("div")
                 .style("opacity", 0)
                 .attr("id", "tooltip")
                 .style("background-color", "white")
@@ -77,36 +92,47 @@ export default {
 
             // Three function that change the tooltip when user hover / move / leave a cell
             const mouseover = function() {
-                tooltip.style("opacity", 1)
+                tooltip
+                    .style("opacity", 1)
+                d3.select(this)
+                    .style("stroke", "black")
+                    .style("opacity", 1)
             }
             const mousemove = function(event,d) {
                 tooltip
                     .html("Numero di transazioni: " + d[2])
                     .style("position", "absolute")
-                    .style("left", (event.x) + "px")
+                    .style("left", (event.x)+20 + "px")
                     .style("top", (event.y) + "px")
             }
             const mouseleave = function() {
-                tooltip.style("opacity", 0)
+                tooltip
+                    .style("opacity", 0)
+                d3.select(this)
+                    .style("stroke", "none")
+                    .style("opacity", 0.8)
             }
 
             //Read the data
+            const gs = gg
+                .selectAll("g.rects")
+                .data(data)
+                .join("g")
+                .attr("class","rects");
 
-            svg.selectAll()
-                .data(data, function (d, i) {
-                    return data[i][0] + ':' + data[i][1];
-                })
+            gs.selectAll("rect")
+                .data((d)=>[d])
                 .join("rect")
-                .attr("x", function (d, i) {
-                    return x(+data[i][0])
+                .attr("x", function (d) {
+                    return x(d[0])
                 })
-                .attr("y", function (d, i) {
-                    return y(data[i][1])
+                .attr("y", function (d) {
+                    return y(d[1])
                 })
                 .attr("width", x.bandwidth())
                 .attr("height", y.bandwidth())
-                .style("fill", function (d, i) {
-                    return myColor(data[i][2])
+                .style("fill", function (d) {
+                    return myColor(d[2])
                 })
                 .on("mouseover", mouseover)
                 .on("mousemove", mousemove)
