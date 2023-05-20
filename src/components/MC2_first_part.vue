@@ -16,7 +16,7 @@
             </b-col>
             <b-col class="col-xl-5 col-lg-12">
                 <b-row>
-                    <b-col class="col-lg-4 offset-md-4">
+                    <b-col class="col-lg-6 offset-md-3">
                         <b-form-group label="Chose a place to focus on:" label-cols="12" content-cols="12">
                             <b-form-select
                                     v-model="select_focus.selected"
@@ -189,16 +189,21 @@ export default {
             cf = crossfilter(transactions_credit_loyalty.filter(d => d.location === place));
             dHour = cf.dimension(d => d.hour);
 
+            let take_keys = []
             this.data_for_barchart = dHour.group().reduceCount().all().map(d => [d.key, d.value]);
-            let take_keys = this.data_for_barchart.map(d => d[0]);
+
+            take_keys = this.data_for_barchart.map(d => d[0]);
+            console.log(take_keys)
 
             for (let i = 0; i < 24; i++) {
-                if (!take_keys.includes(String(i))) {
-                    if (String(i).length < 2) {
-                        this.data_for_barchart.push(["0" + String(i), 0])
-                    } else {
-                        this.data_for_barchart.push([String(i), 0])
-                    }
+                let stringa = String(i);
+                if (stringa.length < 2) {
+                    stringa = "0" + stringa;
+                }
+                if (!take_keys.includes(stringa)) {
+
+                    this.data_for_barchart.push([stringa, 0])
+
                 }
             }
             this.data_for_barchart.sort();

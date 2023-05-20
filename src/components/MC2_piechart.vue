@@ -31,8 +31,8 @@ export default {
     methods: {
         buildpiechart(data) {
             // set the dimensions and margins of the graph
-            let width = 300;
-            let height = 300;
+            let width = 200;
+            let height = 200;
             let margin = 20;
 
             // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.

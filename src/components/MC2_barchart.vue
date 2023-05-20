@@ -1,7 +1,7 @@
 <template>
     <b-col cols="12" id="my_barchart">
         <h4>Time of transactions during the analyzed period:</h4>
-        <p>(NB: transactions using only the loyalty card are not taken into consideration)</p>
+        <p>(NB: transactions made using only the loyalty card are not taken into consideration)</p>
         <svg id="my_barchart_dataviz"></svg>
     </b-col>
 </template>
@@ -18,7 +18,7 @@ let x,
     gg;
 
 const margin = {top: 30, right: 30, bottom: 30, left: 60},
-    width = 700 - margin.left - margin.right,
+    width = 500 - margin.left - margin.right,
     height = 390 - margin.top - margin.bottom;
 
 // set the dimensions and margins of the graph
@@ -33,7 +33,7 @@ export default {
     },
     watch:{
         data_for_barchart(newVal){
-            this.buildBarchart(newVal)
+            this.update2(newVal)
         }
     },
     methods: {
@@ -78,8 +78,10 @@ export default {
             data.forEach((element) => {
                 myGroups.push(element[0]);
             });
-            x.domain(data.map(function(d) { return d[0]; }))
+            x.domain(data.map(function(d) {
+                return d[0]; }))
             xAxis.call(d3.axisBottom(x))
+
 
             // Update the Y axis
             y.domain([0, d3.max(data, function (d) {

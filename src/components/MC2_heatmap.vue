@@ -1,7 +1,7 @@
 <template>
-    <div id="my_heatmap" class="pb-2">
-        <h4 class="mt-3">Number of transactions for each place during the analyzed period:</h4>
-        <svg id="my_heatmap_dataviz"></svg>
+    <div id="my_heatmap" class="pb-2" style="text-align: start">
+        <h4 class="mt-3" style="text-align: center">Number of transactions for each place during the analyzed period:</h4>
+        <svg id="my_heatmap_dataviz" style="text-align: left"></svg>
     </div>
 </template>
 
@@ -9,6 +9,8 @@
 const d3 = require("d3");
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
+
+
 export default {
     name: "MC2_heatmap",
     props: {
@@ -25,8 +27,8 @@ export default {
     methods: {
         buildHeatmap(data) {
             // set the dimensions and margins of the graph
-            const margin = {top: 30, right: 30, bottom: 30, left: 200},
-                width = 1000 - margin.left - margin.right,
+            const margin = {top: 30, right: 30, bottom: 100, left: 200},
+                width = 700 - margin.left - margin.right,
                 height = 770 - margin.top - margin.bottom;
 
 
@@ -62,7 +64,9 @@ export default {
                 .style("font-size", 14)
                 .attr("transform", "translate(0," + height + ")")
                 .call(d3.axisBottom(x).tickSize(0))
-                .select(".domain").remove()
+                .selectAll("text")
+                .attr("transform", "translate(-10,0)rotate(-45)")
+                .style("text-anchor", "end");
 
             // Build X scales and axis:
             const y = d3.scaleBand()
@@ -97,16 +101,23 @@ export default {
                     .style("opacity", 1)
             }
 
+/*            const onclick = function(d){
+                let data = d.target.__data__
+                console.log(data[0]+ ":" +data[1])
+            }*/
+
             //Read the data
             const gs = gg
                 .selectAll("g.rects")
                 .data(data)
                 .join("g")
-                .attr("class","rects");
+                .attr("class","rects")
+
 
             gs.selectAll("rect")
                 .data((d)=>[d])
                 .join("rect")
+                .attr("data-custom-open","modal-1")
                 .attr("x", function (d) {
                     return x("Gen "+d[0])
                 })
@@ -121,8 +132,11 @@ export default {
                     return myColor(d[2])
                 })
                 .attr("ref", "btnShow")
+                /*.on("click", onclick)*/
                 .on("mouseover", mouseover)
                 .on("mouseleave", mouseleave)
+
+
 
             tippy('[data-tippy-content]',{
                 allowHTML:true,
