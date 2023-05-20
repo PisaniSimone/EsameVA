@@ -1,5 +1,6 @@
 <template>
     <b-col cols="7" id="my_heatmap">
+        <h4 class="mt-2">Number of transactions for each place during the analyzed period:</h4>
         <svg id="my_heatmap_dataviz"></svg>
     </b-col>
 </template>
@@ -24,7 +25,7 @@ export default {
             // set the dimensions and margins of the graph
             const margin = {top: 30, right: 30, bottom: 30, left: 200},
                 width = 1000 - margin.left - margin.right,
-                height = 800 - margin.top - margin.bottom;
+                height = 750 - margin.top - margin.bottom;
 
 
             // append the svg object to the body of the page
@@ -78,7 +79,7 @@ export default {
 
             // Build color scale
             const myColor = d3.scaleLinear()
-                .range(["yellow", "red"])
+                .range(["#E3D081", "#A90022"])
                 .domain([null, d3.max(data, function (d){ return d[2];})])
 
 

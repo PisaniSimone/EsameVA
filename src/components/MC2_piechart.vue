@@ -1,5 +1,6 @@
 <template>
     <b-col cols="12" id="my_piechart">
+        <h4 class="mt-2">Percentage of use of credit and loyalty cards in transactions:</h4>
         <svg id="my_piechart_dataviz"></svg>
     </b-col>
 </template>
@@ -17,11 +18,6 @@ export default {
     props: {
         data_for_piechart: Object,
     },
-    data() {
-        return {
-            data1: {a: 9, b: 20, c: 30, d: 8, e: 12}
-        }
-    },
     mounted() {
         this.buildpiechart(this.data_for_piechart)
     },
@@ -33,9 +29,9 @@ export default {
     methods: {
         buildpiechart(data) {
             // set the dimensions and margins of the graph
-            let width = 350
-            let height = 350
-            let margin = 40;
+            let width = 300;
+            let height = 300;
+            let margin = 20;
 
             // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
             radius = Math.min(width, height) / 2 - margin;
@@ -55,7 +51,7 @@ export default {
 
             color = d3.scaleOrdinal()
                 .domain(keys)
-                .range(d3.schemeDark2);
+                .range(["#54494B", "#BB2543", "#E3D081" ]);
 
             // Initialize the plot with the first dataset
             this.update(data)

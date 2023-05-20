@@ -1,6 +1,6 @@
 <template>
     <b-container fluid>
-        <b-row class="plots pt-5" style="background-color: #F5F5F5">
+        <b-row class="plots pt-3" style="background-color: #F5F5F5">
             <b-col cols="7">
                 <b-form-group label="Chose a view mode:" v-slot="{ ariaDescribedby }">
                     <b-form-radio-group
@@ -25,7 +25,7 @@
             <b-col cols="5">
                 <b-row>
                     <MC2_piechart :data_for_piechart="this.data_for_piechart"></MC2_piechart>
-                    <b-col cols="12">secondo grafico</b-col>
+                    <MC2_barchart :data_for_barchart="this.data_for_barchart"></MC2_barchart>
                 </b-row>
             </b-col>
         </b-row>
@@ -40,21 +40,24 @@ import creditdata from "/public/data/cc_data.json";
 import {crossfilter} from "crossfilter/crossfilter";
 import MC2_heatmap from "@/components/MC2_heatmap.vue";
 import MC2_piechart from "@/components/MC2_piechart.vue";
+import MC2_barchart from "@/components/MC2_barchart.vue";
 
 let cf;
 let dDateLoc;
 let dLoc;
+let dHour;
 
 let transactions_credit_loyalty = [];
 
 
 export default {
     name: "MC2_first_part",
-    components: {MC2_piechart, MC2_heatmap},
+    components: {MC2_barchart, MC2_piechart, MC2_heatmap},
     data() {
         return {
             data_for_heatmap: [],
             data_for_piechart: {},
+            data_for_barchart: [],
             radio_heatmap: {
                 selected: "everything",
                 options: [
@@ -89,6 +92,7 @@ export default {
                 location: d.location,
                 price: +d.price,
                 last4num: +d.last4ccnum,
+                hour: d.timestamp.split(" ")[1].split(":")[0]
             };
         });
 
@@ -103,8 +107,6 @@ export default {
         this.select_focus.selected = this.select_focus.options[0];
 
         this.check_single_place(this.select_focus.selected);
-
-
     },
     watch: {
         radio_heatmap: {
@@ -183,7 +185,25 @@ export default {
 
             second_filter = first_filter.filter(d => d.loyaltyId === null)
             this.data_for_piechart["Transactions with only credit card"]= second_filter.length;
-        }
+
+            cf=crossfilter(transactions_credit_loyalty.filter(d=>d.location === place));
+            dHour=cf.dimension(d=>d.hour);
+
+            this.data_for_barchart = dHour.group().reduceCount().all().map(d=>[d.key,d.value]);
+            let take_keys = this.data_for_barchart.map(d=>d[0]);
+
+            for(let i = 0; i<24; i++){
+                if (!take_keys.includes(String(i))){
+                    if(String(i).length<2){
+                        this.data_for_barchart.push(["0"+String(i), 0])
+                    }
+                    else{
+                        this.data_for_barchart.push([String(i), 0])
+                    }
+                }
+            }
+            this.data_for_barchart.sort();
+        },
     },
 };
 </script>
