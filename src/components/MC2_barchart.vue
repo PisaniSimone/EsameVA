@@ -8,6 +8,8 @@
 
 <script>
 const d3 = require("d3")
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css';
 
 let x,
     xAxis,
@@ -15,9 +17,9 @@ let x,
     yAxis,
     gg;
 
-const margin = {top: 30, right: 30, bottom: 70, left: 60},
+const margin = {top: 30, right: 30, bottom: 30, left: 60},
     width = 700 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+    height = 390 - margin.top - margin.bottom;
 
 // set the dimensions and margins of the graph
 
@@ -93,6 +95,9 @@ export default {
             rects_barchart
                 .enter()
                 .append("rect") // Add a new rect for each new elements
+                .attr("data-tippy-content", function (d) {
+                    return "From "+d[0]+":00 to "+d[0]+":59 there were "+d[1]+" transactions"
+                })
                 .merge(rects_barchart) // get the already existing elements as well
                 .transition() // and apply changes to all of them
                 .duration(1000)
@@ -107,6 +112,12 @@ export default {
                     return height - y(d[1]);
                 })
                 .attr("fill", "#6C7D47")
+
+            tippy('[data-tippy-content]', {
+                allowHTML: true,
+                trigger: "mouseenter",
+                touch: false,
+            });
 
             // If less group in the new dataset, I delete the ones not in use anymore
             rects_barchart

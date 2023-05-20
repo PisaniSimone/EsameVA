@@ -1,7 +1,7 @@
 <template>
     <b-container fluid>
         <b-row class="plots pt-3" style="background-color: #F5F5F5">
-            <b-col cols="7">
+            <b-col cols="7" class=" col-xl-7 col-lg-12">
                 <b-form-group label="Chose a view mode:" v-slot="{ ariaDescribedby }">
                     <b-form-radio-group
                             id="btn-radios-1"
@@ -12,18 +12,18 @@
                             buttons
                     ></b-form-radio-group>
                 </b-form-group>
+                <MC2_heatmap :data_for_heatmap="this.data_for_heatmap"></MC2_heatmap>
             </b-col>
-            <b-col cols="3" class="offset-1">
-                <b-form-group label="Chose a place to focus on:" label-cols="12" content-cols="12">
-                    <b-form-select
-                            v-model="select_focus.selected"
-                            :options="select_focus.options"
-                    ></b-form-select>
-                </b-form-group>
-            </b-col>
-            <MC2_heatmap :data_for_heatmap="this.data_for_heatmap"></MC2_heatmap>
-            <b-col cols="5">
+            <b-col class="col-xl-5 col-lg-12">
                 <b-row>
+                    <b-col class="col-lg-4 offset-md-4">
+                        <b-form-group label="Chose a place to focus on:" label-cols="12" content-cols="12">
+                            <b-form-select
+                                    v-model="select_focus.selected"
+                                    :options="select_focus.options"
+                            ></b-form-select>
+                        </b-form-group>
+                    </b-col>
                     <MC2_piechart :data_for_piechart="this.data_for_piechart"></MC2_piechart>
                     <MC2_barchart :data_for_barchart="this.data_for_barchart"></MC2_barchart>
                 </b-row>
@@ -178,26 +178,25 @@ export default {
 
             let first_filter = transactions_credit_loyalty.filter(d => d.location === place);
             let second_filter = first_filter.filter(d => d.last4num !== null && d.loyaltyId !== null)
-            this.data_for_piechart["Transactions with both loyalty and credit card"]= second_filter.length;
+            this.data_for_piechart["Transactions with both loyalty and credit card"] = second_filter.length;
 
             second_filter = first_filter.filter(d => d.last4num === null)
-            this.data_for_piechart["Transactions with only loyalty card"]= second_filter.length;
+            this.data_for_piechart["Transactions with only loyalty card"] = second_filter.length;
 
             second_filter = first_filter.filter(d => d.loyaltyId === null)
-            this.data_for_piechart["Transactions with only credit card"]= second_filter.length;
+            this.data_for_piechart["Transactions with only credit card"] = second_filter.length;
 
-            cf=crossfilter(transactions_credit_loyalty.filter(d=>d.location === place));
-            dHour=cf.dimension(d=>d.hour);
+            cf = crossfilter(transactions_credit_loyalty.filter(d => d.location === place));
+            dHour = cf.dimension(d => d.hour);
 
-            this.data_for_barchart = dHour.group().reduceCount().all().map(d=>[d.key,d.value]);
-            let take_keys = this.data_for_barchart.map(d=>d[0]);
+            this.data_for_barchart = dHour.group().reduceCount().all().map(d => [d.key, d.value]);
+            let take_keys = this.data_for_barchart.map(d => d[0]);
 
-            for(let i = 0; i<24; i++){
-                if (!take_keys.includes(String(i))){
-                    if(String(i).length<2){
-                        this.data_for_barchart.push(["0"+String(i), 0])
-                    }
-                    else{
+            for (let i = 0; i < 24; i++) {
+                if (!take_keys.includes(String(i))) {
+                    if (String(i).length < 2) {
+                        this.data_for_barchart.push(["0" + String(i), 0])
+                    } else {
                         this.data_for_barchart.push([String(i), 0])
                     }
                 }

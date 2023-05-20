@@ -7,6 +7,8 @@
 
 <script>
 const d3 = require("d3");
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css';
 
 let radius,
     color,
@@ -51,7 +53,7 @@ export default {
 
             color = d3.scaleOrdinal()
                 .domain(keys)
-                .range(["#54494B", "#BB2543", "#E3D081" ]);
+                .range(["#54494B", "#BB2543", "#E3D081"]);
 
             // Initialize the plot with the first dataset
             this.update(data)
@@ -73,57 +75,43 @@ export default {
 
             const arcGenerator2 = d3.arc()
                 .innerRadius(0)
-                .outerRadius(radius+10)
+                .outerRadius(radius + 10)
 
             // map to data
-            const u = svg.selectAll("path")
+            const paths = svg.selectAll("path")
                 .data(data_ready)
 
-            const tooltip2 = d3.select("#my_piechart")
-                .selectAll("div")
-                .data([0])
-                .join("div")
-                .style("opacity", 0)
-                .attr("id", "tooltip_piechart")
-                .style("background-color", "white")
-                .style("border", "solid")
-                .style("border-width", "2px")
-                .style("border-radius", "10px")
-                .style("position", "absolute")
-
-            const mouseover2 = function() {
-                tooltip2
-                    .style("opacity", 1)
-                    .style("padding", "5px")
+            const mouseover2 = function () {
                 d3.select(this).transition().duration(1000).attr("d", arcGenerator2);
             }
-            const mousemove2 = function(event,d) {
-                tooltip2
-                    .html(d.data[0]+": <strong>"+d.data[1]+"</strong>")
-                    .style("left", (event.x)+20 + "px")
-                    .style("top", (event.y) + "px")
-            }
-            const mouseleave2 = function() {
-                tooltip2
-                    .style("opacity", 0)
-                    .style("padding", null)
+
+            const mouseleave2 = function () {
                 d3.select(this).transition().duration(200).attr("d", arcGenerator);
             }
 
-           u
+
+            paths
                 .join("path")
                 .attr("stroke", "white")
                 .style("stroke-width", "2px")
                 .style("opacity", 1)
+                .attr("data-tippy-content", function (d) {
+                    return d.data[0] + ": <strong>" + d.data[1] + "</strong>"
+                })
                 .on("mouseover", mouseover2)
-                .on("mousemove", mousemove2)
                 .on("mouseleave", mouseleave2)
-               .transition()
-               .duration(1000)
-               .attr('d', arcGenerator)
-               .attr('fill', function (d) {
-                   return (color(d.data[0]))
-               });
+                .transition()
+                .duration(1000)
+                .attr('d', arcGenerator)
+                .attr('fill', function (d) {
+                    return (color(d.data[0]))
+                });
+
+            tippy('[data-tippy-content]', {
+                allowHTML: true,
+                trigger: "mouseenter",
+                touch: false,
+            });
         }
     }
 }

@@ -1,12 +1,14 @@
 <template>
-    <b-col cols="7" id="my_heatmap">
-        <h4 class="mt-2">Number of transactions for each place during the analyzed period:</h4>
+    <div id="my_heatmap" class="pb-2">
+        <h4 class="mt-3">Number of transactions for each place during the analyzed period:</h4>
         <svg id="my_heatmap_dataviz"></svg>
-    </b-col>
+    </div>
 </template>
 
 <script>
 const d3 = require("d3");
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css';
 export default {
     name: "MC2_heatmap",
     props: {
@@ -25,7 +27,7 @@ export default {
             // set the dimensions and margins of the graph
             const margin = {top: 30, right: 30, bottom: 30, left: 200},
                 width = 1000 - margin.left - margin.right,
-                height = 750 - margin.top - margin.bottom;
+                height = 770 - margin.top - margin.bottom;
 
 
             // append the svg object to the body of the page
@@ -82,38 +84,14 @@ export default {
                 .range(["#E3D081", "#A90022"])
                 .domain([null, d3.max(data, function (d){ return d[2];})])
 
-
-            const tooltip = d3.select("#my_heatmap")
-                .selectAll("div")
-                .data([0])
-                .join("div")
-                .style("opacity", 0)
-                .attr("id", "tooltip")
-                .style("background-color", "white")
-                .style("border", "solid")
-                .style("border-width", "2px")
-                .style("border-radius", "5px")
-                .style("position", "absolute")
-
             // Three function that change the tooltip when user hover / move / leave a cell
             const mouseover = function() {
-                tooltip
-                    .style("opacity", 1)
-                    .style("padding", "5px")
                 d3.select(this)
                     .style("stroke", "black")
                     .style("opacity", 1)
             }
-            const mousemove = function(event,d) {
-                tooltip
-                    .html("Number of transations on <strong>Gen "+d[0] +"</strong> at <strong>"+d[1]+"</strong>: <strong>" + d[2]+"</strong>")
-                    .style("left", (event.x)+20 + "px")
-                    .style("top", (event.y) + "px")
-            }
+
             const mouseleave = function() {
-                tooltip
-                    .style("opacity", 0)
-                    .style("padding", null)
                 d3.select(this)
                     .style("stroke", "none")
                     .style("opacity", 1)
@@ -137,12 +115,20 @@ export default {
                 })
                 .attr("width", x.bandwidth())
                 .attr("height", y.bandwidth())
+                .attr("data-tippy-content",function (d){
+                    return "Number of transations on <strong>Gen "+d[0] +"</strong> at <strong>"+d[1]+"</strong>: <strong>" + d[2]+"</strong>"})
                 .style("fill", function (d) {
                     return myColor(d[2])
                 })
+                .attr("ref", "btnShow")
                 .on("mouseover", mouseover)
-                .on("mousemove", mousemove)
                 .on("mouseleave", mouseleave)
+
+            tippy('[data-tippy-content]',{
+                allowHTML:true,
+                trigger: "mouseenter",
+                touch: false,
+            });
         }
     }
 }
