@@ -1,7 +1,7 @@
 <template>
     <b-container fluid>
         <b-row class="plots pt-3" style="background-color: #F5F5F5">
-            <b-col cols="7" class=" col-xl-7 col-lg-12">
+            <b-col class=" col-xxl-6 col-lg-12">
                 <b-form-group label="Chose a view mode:" v-slot="{ ariaDescribedby }">
                     <b-form-radio-group
                             id="btn-radios-1"
@@ -14,7 +14,7 @@
                 </b-form-group>
                 <MC2_heatmap :data_for_heatmap="this.data_for_heatmap"></MC2_heatmap>
             </b-col>
-            <b-col class="col-xl-5 col-lg-12">
+            <b-col class="col-xl-5 offset-xl-1 col-lg-12">
                 <b-row>
                     <b-col class="col-lg-6 offset-md-3">
                         <b-form-group label="Chose a place to focus on:" label-cols="12" content-cols="12">

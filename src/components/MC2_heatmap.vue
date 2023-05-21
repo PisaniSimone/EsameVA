@@ -28,7 +28,7 @@ export default {
         buildHeatmap(data) {
             // set the dimensions and margins of the graph
             const margin = {top: 30, right: 30, bottom: 100, left: 200},
-                width = 700 - margin.left - margin.right,
+                width = 800 - margin.left - margin.right,
                 height = 770 - margin.top - margin.bottom;
 
 
