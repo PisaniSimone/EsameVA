@@ -123,21 +123,7 @@ export default {
                     return height - y(d[1]);
                 })
                 .attr("fill", "#6C7D47")
-                .attr("data-tippy-content", function () {
-                    return "";
-                });
-
-            rects_barchart.attr("data-tippy-content", function (data) {
-                return (
-                    "From " +
-                    data[0] +
-                    ":00 to " +
-                    data[0] +
-                    ":59 there were " +
-                    data[1] +
-                    " transactions"
-                );
-            });
+                .attr("data-tippy-content", null);
 
             tippy("[data-tippy-content]", {
                 allowHTML: true,
@@ -146,7 +132,9 @@ export default {
             });
 
             // If less group in the new dataset, I delete the ones not in use anymore
-            rects_barchart.exit().remove();
+            rects_barchart.exit()
+                .attr("data-tippy-content", null)
+                .remove();
         },
     },
 };

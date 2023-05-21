@@ -100,30 +100,14 @@ export default {
                 d3.select(this).style("stroke", "none").style("opacity", 1);
             };
 
-            /*            const onclick = function(d){
-                      let data = d.target.__data__
-                      console.log(data[0]+ ":" +data[1])
-                  }*/
-
-            //Read the data
-            const gs = gg
+            const rects_heat = gg
                 .selectAll("g.rects")
                 .data(data)
-                .join("g")
-                .attr("class", "rects");
 
-            gs.selectAll("rect")
-                .data((d) => [d])
-                .join("rect")
-                .attr("data-custom-open", "modal-1")
-                .attr("x", function (d) {
-                    return x("Gen " + d[0]);
-                })
-                .attr("y", function (d) {
-                    return y(d[1]);
-                })
-                .attr("width", x.bandwidth())
-                .attr("height", y.bandwidth())
+            const gs = rects_heat
+                .enter()
+                .append("g")
+                .attr("class", "rects")
                 .attr("data-tippy-content", function (d) {
                     return (
                         "Number of transations on <strong>Gen " +
@@ -135,11 +119,23 @@ export default {
                         "</strong>"
                     );
                 })
+                .merge(rects_heat);
+
+            gs.selectAll("rect.heat")
+                .data((d) => [d])
+                .join("rect")
+                .attr("class", "heat")
+                .attr("x", function (d) {
+                    return x("Gen " + d[0]);
+                })
+                .attr("y", function (d) {
+                    return y(d[1]);
+                })
+                .attr("width", x.bandwidth())
+                .attr("height", y.bandwidth())
                 .style("fill", function (d) {
                     return myColor(d[2]);
                 })
-                .attr("ref", "btnShow")
-                /*.on("click", onclick)*/
                 .on("mouseover", mouseover)
                 .on("mouseleave", mouseleave);
 
@@ -148,6 +144,11 @@ export default {
                 trigger: "mouseenter",
                 touch: false,
             });
+
+            rects_heat
+                .exit()
+                .attr("data-tippy-content", null)
+                .remove();
         },
     },
 };
