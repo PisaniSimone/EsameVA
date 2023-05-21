@@ -1,7 +1,7 @@
 <template>
     <b-container fluid>
-        <b-row class="plots pt-3" style="background-color: #F5F5F5">
-            <b-col class=" col-xxl-6 col-lg-12">
+        <b-row class="plots pt-3" style="background-color: #f5f5f5">
+            <b-col cols="12">
                 <b-form-group label="Chose a view mode:" v-slot="{ ariaDescribedby }">
                     <b-form-radio-group
                             id="btn-radios-1"
@@ -14,31 +14,49 @@
                 </b-form-group>
                 <MC2_heatmap :data_for_heatmap="this.data_for_heatmap"></MC2_heatmap>
             </b-col>
-            <b-col class="col-xl-5 offset-xl-1 col-lg-12">
+            <b-col cols="12">
                 <b-row>
-                    <b-col class="col-lg-6 offset-md-3">
-                        <b-form-group label="Chose a place to focus on:" label-cols="12" content-cols="12">
+                    <b-col cols="3" class="offset-2">
+                        <b-form-group
+                                label="Chose a place to focus on:"
+                                label-cols="12"
+                                content-cols="12"
+                        >
                             <b-form-select
                                     v-model="select_focus.selected"
                                     :options="select_focus.options"
                             ></b-form-select>
                         </b-form-group>
                     </b-col>
-                    <MC2_piechart :data_for_piechart="this.data_for_piechart"></MC2_piechart>
-                    <MC2_barchart :data_for_barchart="this.data_for_barchart"></MC2_barchart>
-
+                    <b-col cols="7">
+                        <b-form-group
+                                label="Chose a day to focus on:"
+                                label-cols="12"
+                                content-cols="12"
+                                class="mb-3"
+                        >
+                            <b-form-radio-group
+                                    v-model="radio_focus.selected"
+                                    :options="radio_focus.options"
+                                    size="sm"
+                                    buttons
+                            ></b-form-radio-group>
+                        </b-form-group>
+                    </b-col>
+                    <MC2_piechart
+                            :data_for_piechart="this.data_for_piechart"
+                    ></MC2_piechart>
+                    <MC2_barchart
+                            :data_for_barchart="this.data_for_barchart"
+                    ></MC2_barchart>
                 </b-row>
-            </b-col>
-            <b-col cols="12">
-                <svg id="ciao" width="700" height="500"></svg>
             </b-col>
         </b-row>
     </b-container>
-
 </template>
 
 <script>
-const d3 = require("d3")
+const d3 = require("d3");
 
 import {crossfilter} from "crossfilter/crossfilter";
 import MC2_heatmap from "@/components/MC2_heatmap.vue";
@@ -49,9 +67,9 @@ let cf;
 let dDateLoc;
 let dLoc;
 let dHour;
+let dDate;
 
 let transactions_credit_loyalty = [];
-
 
 export default {
     name: "MC2_first_part",
@@ -67,80 +85,93 @@ export default {
                     {text: "All", value: "everything"},
                     {text: "Only credit cards", value: "credit"},
                     {text: "Only loyalty cards", value: "loyalty"},
-                ]
+                ],
             },
             select_focus: {
                 selected: String,
-                options: []
-            }
+                options: [],
+            },
+            radio_focus: {
+                selected: "everything",
+                options: [
+                    {text: "All", value: "everything"},
+                    {text: "Only credit cards", value: "credit"},
+                    {text: "Only loyalty cards", value: "loyalty"},
+                ],
+            },
         };
     },
     mounted() {
         Promise.all([
             d3.json("/data/loyalty_data.json"),
             d3.json("/data/cc_data.json"),
-            d3.json("/data/world.geojson")
-        ]).then(files =>{
+            d3.json("/data/world.geojson"),
+        ]).then((files) => {
             const loyaltydata = files[0],
-                creditdata = files[1],
-                geoboh = files[2];
+                creditdata = files[1];
 
-            const loyalty_card = loyaltydata.map((d) => {
-                d.loyaltynum = String;
-                return {
-                    date: d.timestamp,
-                    location: d.location,
-                    price: +d.price,
-                    loyaltyId: d.loyaltynum,
-                };
-            });
-
-            const credit_card = creditdata.map((d) => {
-                d.last4ccnum = Number;
-                return {
-                    date: d.timestamp.split(" ")[0],
-                    time: d.timestamp.split(" ")[1],
-                    location: d.location,
-                    price: +d.price,
-                    last4num: +d.last4ccnum,
-                    hour: d.timestamp.split(" ")[1].split(":")[0]
+            const loyalty_card = loyaltydata.map(
+                ({location, loyaltynum, price, timestamp}) => {
+                    return {
+                        date: timestamp,
+                        location: location,
+                        price: +price,
+                        loyaltyId: loyaltynum,
+                    };
                 }
-            });
+            );
+
+            const credit_card = creditdata.map(
+                ({last4ccnum, location, price, timestamp}) => {
+                    return {
+                        date: timestamp.split(" ")[0],
+                        time: timestamp.split(" ")[1],
+                        location: location,
+                        price: +price,
+                        last4num: +last4ccnum,
+                        hour: timestamp.split(" ")[1].split(":")[0],
+                    };
+                }
+            );
 
             this.merge_data(credit_card, loyalty_card);
+
             cf = crossfilter(transactions_credit_loyalty);
-            dDateLoc = cf.dimension(d => [d.date, d.location]);
-            dLoc = cf.dimension(d => d.location)
+            dDateLoc = cf.dimension((d) => [d.date, d.location]);
+            dLoc = cf.dimension((d) => d.location);
+            dDate = cf.dimension((d) => d.date);
 
-
-            this.data_for_heatmap = dDateLoc.group().reduceCount().all().map(v => [v.key[0].split("/")[1], v.key[1], v.value]);
-            this.select_focus.options = dLoc.group().reduceCount().all().map(v => v.key);
+            this.data_for_heatmap = dDateLoc
+                .group()
+                .reduceCount()
+                .all()
+                .map((v) => [v.key[0].split("/")[1], v.key[1], v.value]);
+            this.select_focus.options = dLoc
+                .group()
+                .reduceCount()
+                .all()
+                .map((v) => v.key);
             this.select_focus.selected = this.select_focus.options[0];
 
-            this.check_single_place(this.select_focus.selected);
+            let transformator = [{text: "All", value: "All"}],
+                accumulator = [];
+            accumulator = dDate
+                .group()
+                .reduceCount()
+                .all()
+                .map((d) => d.key);
+            accumulator.forEach((element) => {
+                transformator.push({
+                    text: element.split("/")[1] + "-01",
+                    value: element,
+                });
+            });
 
-            const svg = d3.select("#ciao"),
-                width2 = +svg.attr("width"),
-                height2 = +svg.attr("height");
+            this.radio_focus.options = transformator;
+            this.radio_focus.selected = this.radio_focus.options[0].value;
 
-// Map and projection
-            const projection = d3.geoNaturalEarth1()
-                .scale(width2 / 1.3 / Math.PI)
-                .translate([width2 / 2, height2 / 2])
-
-            console.log(geoboh.features)
-
-            svg.append("g")
-                .selectAll("path")
-                .data(geoboh.features)
-                .join("path")
-                .attr("fill", "red")
-                .attr("d", d3.geoPath()
-                    .projection(projection)
-                )
-                .style("stroke", "#fff")
-        })
-
+            this.check_focus(this.select_focus.selected, this.radio_focus.selected);
+        });
     },
     watch: {
         radio_heatmap: {
@@ -148,18 +179,32 @@ export default {
                 if (newVal.selected === "everything") {
                     cf = crossfilter(transactions_credit_loyalty);
                 } else if (newVal.selected === "credit") {
-                    cf = crossfilter(transactions_credit_loyalty.filter(d => d.loyaltyId === null));
+                    cf = crossfilter(
+                        transactions_credit_loyalty.filter((d) => d.loyaltyId === null)
+                    );
                 } else {
-                    cf = crossfilter(transactions_credit_loyalty.filter(d => d.last4num === null));
+                    cf = crossfilter(
+                        transactions_credit_loyalty.filter((d) => d.last4num === null)
+                    );
                 }
                 dDateLoc = cf.dimension((d) => [d.date, d.location]);
-                this.data_for_heatmap = dDateLoc.group().reduceCount().all().map(v => [v.key[0].split("/")[1], v.key[1], v.value]);
+                this.data_for_heatmap = dDateLoc
+                    .group()
+                    .reduceCount()
+                    .all()
+                    .map((v) => [v.key[0].split("/")[1], v.key[1], v.value]);
             },
             deep: true,
         },
         select_focus: {
             handler(newVal) {
-                this.check_single_place(newVal.selected);
+                this.check_focus(newVal.selected, this.radio_focus.selected);
+            },
+            deep: true,
+        },
+        radio_focus: {
+            handler(newVal) {
+                this.check_focus(this.select_focus.selected, newVal.selected);
             },
             deep: true,
         },
@@ -207,26 +252,50 @@ export default {
             return transactions_credit_loyalty;
         },
 
-        check_single_place(place) {
+        check_focus(place, day) {
             this.data_for_piechart = {};
+            let first_filter = transactions_credit_loyalty.filter(
+                (d) => d.location === place
+            );
 
-            let first_filter = transactions_credit_loyalty.filter(d => d.location === place);
-            let second_filter = first_filter.filter(d => d.last4num !== null && d.loyaltyId !== null)
-            this.data_for_piechart["Transactions with both loyalty and credit card"] = second_filter.length;
+            if (day !== "All") {
+                first_filter = first_filter.filter((d) => d.date === day);
+            }
 
-            second_filter = first_filter.filter(d => d.last4num === null)
-            this.data_for_piechart["Transactions with only loyalty card"] = second_filter.length;
+            this.initialize_piechart(first_filter);
+            this.initialize_barchart(first_filter);
+        },
 
-            second_filter = first_filter.filter(d => d.loyaltyId === null)
-            this.data_for_piechart["Transactions with only credit card"] = second_filter.length;
+        initialize_piechart(first_filter) {
+            let second_filter = first_filter.filter(
+                (d) => d.last4num !== null && d.loyaltyId !== null
+            );
+            this.data_for_piechart["Transactions with both loyalty and credit card"] =
+                second_filter.length;
 
-            cf = crossfilter(transactions_credit_loyalty.filter(d => d.location === place));
-            dHour = cf.dimension(d => d.hour);
+            second_filter = first_filter.filter((d) => d.last4num === null);
+            this.data_for_piechart["Transactions with only loyalty card"] =
+                second_filter.length;
 
-            let take_keys = []
-            this.data_for_barchart = dHour.group().reduceCount().all().map(d => [d.key, d.value]);
+            second_filter = first_filter.filter((d) => d.loyaltyId === null);
+            this.data_for_piechart["Transactions with only credit card"] =
+                second_filter.length;
+        },
 
-            take_keys = this.data_for_barchart.map(d => d[0]);
+        initialize_barchart(first_filter) {
+            let second_filter = first_filter.filter((d) => d.time !== null);
+            let cf2 = crossfilter(second_filter);
+            dHour = cf2.dimension((d) => d.hour);
+
+            let take_keys = [];
+            this.data_for_barchart = [];
+            this.data_for_barchart = dHour
+                .group()
+                .reduceCount()
+                .all()
+                .map((d) => [d.key, d.value]);
+
+            take_keys = this.data_for_barchart.map((d) => d[0]);
 
             for (let i = 0; i < 24; i++) {
                 let stringa = String(i);
@@ -234,9 +303,7 @@ export default {
                     stringa = "0" + stringa;
                 }
                 if (!take_keys.includes(stringa)) {
-
-                    this.data_for_barchart.push([stringa, 0])
-
+                    this.data_for_barchart.push([stringa, 0]);
                 }
             }
             this.data_for_barchart.sort();
