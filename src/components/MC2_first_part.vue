@@ -26,7 +26,11 @@
                     </b-col>
                     <MC2_piechart :data_for_piechart="this.data_for_piechart"></MC2_piechart>
                     <MC2_barchart :data_for_barchart="this.data_for_barchart"></MC2_barchart>
+
                 </b-row>
+            </b-col>
+            <b-col cols="12">
+                <svg id="ciao" width="700" height="500"></svg>
             </b-col>
         </b-row>
     </b-container>
@@ -34,9 +38,8 @@
 </template>
 
 <script>
+const d3 = require("d3")
 
-import loyaltydata from "/public/data/loyalty_data.json";
-import creditdata from "/public/data/cc_data.json";
 import {crossfilter} from "crossfilter/crossfilter";
 import MC2_heatmap from "@/components/MC2_heatmap.vue";
 import MC2_piechart from "@/components/MC2_piechart.vue";
@@ -73,40 +76,71 @@ export default {
         };
     },
     mounted() {
-        /*Inizializzo i dati e la pagina iniziale*/
-        const loyalty_card = loyaltydata.map((d) => {
-            d.loyaltynum = String;
-            return {
-                date: d.timestamp,
-                location: d.location,
-                price: +d.price,
-                loyaltyId: d.loyaltynum,
-            };
-        });
+        Promise.all([
+            d3.json("/data/loyalty_data.json"),
+            d3.json("/data/cc_data.json"),
+            d3.json("/data/world.geojson")
+        ]).then(files =>{
+            const loyaltydata = files[0],
+                creditdata = files[1],
+                geoboh = files[2];
 
-        const credit_card = creditdata.map((d) => {
-            d.last4ccnum = Number;
-            return {
-                date: d.timestamp.split(" ")[0],
-                time: d.timestamp.split(" ")[1],
-                location: d.location,
-                price: +d.price,
-                last4num: +d.last4ccnum,
-                hour: d.timestamp.split(" ")[1].split(":")[0]
-            };
-        });
+            const loyalty_card = loyaltydata.map((d) => {
+                d.loyaltynum = String;
+                return {
+                    date: d.timestamp,
+                    location: d.location,
+                    price: +d.price,
+                    loyaltyId: d.loyaltynum,
+                };
+            });
 
-        this.merge_data(credit_card, loyalty_card);
-        cf = crossfilter(transactions_credit_loyalty);
-        dDateLoc = cf.dimension(d => [d.date, d.location]);
-        dLoc = cf.dimension(d => d.location)
+            const credit_card = creditdata.map((d) => {
+                d.last4ccnum = Number;
+                return {
+                    date: d.timestamp.split(" ")[0],
+                    time: d.timestamp.split(" ")[1],
+                    location: d.location,
+                    price: +d.price,
+                    last4num: +d.last4ccnum,
+                    hour: d.timestamp.split(" ")[1].split(":")[0]
+                }
+            });
+
+            this.merge_data(credit_card, loyalty_card);
+            cf = crossfilter(transactions_credit_loyalty);
+            dDateLoc = cf.dimension(d => [d.date, d.location]);
+            dLoc = cf.dimension(d => d.location)
 
 
-        this.data_for_heatmap = dDateLoc.group().reduceCount().all().map(v => [v.key[0].split("/")[1], v.key[1], v.value]);
-        this.select_focus.options = dLoc.group().reduceCount().all().map(v => v.key);
-        this.select_focus.selected = this.select_focus.options[0];
+            this.data_for_heatmap = dDateLoc.group().reduceCount().all().map(v => [v.key[0].split("/")[1], v.key[1], v.value]);
+            this.select_focus.options = dLoc.group().reduceCount().all().map(v => v.key);
+            this.select_focus.selected = this.select_focus.options[0];
 
-        this.check_single_place(this.select_focus.selected);
+            this.check_single_place(this.select_focus.selected);
+
+            const svg = d3.select("#ciao"),
+                width2 = +svg.attr("width"),
+                height2 = +svg.attr("height");
+
+// Map and projection
+            const projection = d3.geoNaturalEarth1()
+                .scale(width2 / 1.3 / Math.PI)
+                .translate([width2 / 2, height2 / 2])
+
+            console.log(geoboh.features)
+
+            svg.append("g")
+                .selectAll("path")
+                .data(geoboh.features)
+                .join("path")
+                .attr("fill", "red")
+                .attr("d", d3.geoPath()
+                    .projection(projection)
+                )
+                .style("stroke", "#fff")
+        })
+
     },
     watch: {
         radio_heatmap: {
@@ -193,7 +227,6 @@ export default {
             this.data_for_barchart = dHour.group().reduceCount().all().map(d => [d.key, d.value]);
 
             take_keys = this.data_for_barchart.map(d => d[0]);
-            console.log(take_keys)
 
             for (let i = 0; i < 24; i++) {
                 let stringa = String(i);
