@@ -25,7 +25,7 @@ export default {
         data_for_barchart: Array,
     },
     mounted() {
-        this.buildBarchart(this.data_for_barchart)
+        this.buildBarchart(this.data_for_barchart);
     },
     watch: {
         data_for_barchart(newVal) {
@@ -73,11 +73,7 @@ export default {
             data.forEach((element) => {
                 myGroups.push(element[0]);
             });
-            x.domain(
-                data.map(function (d) {
-                    return d[0];
-                })
-            );
+            x.domain(data.map((d) => d[0]));
             xAxis.call(d3.axisBottom(x));
 
             // Update the Y axis
@@ -90,57 +86,41 @@ export default {
             yAxis.transition().duration(1000).call(d3.axisLeft(y));
 
             // Create the rects_barchart variable
-            const rects_barchart = gg
-                .selectAll("g.rects_bar")
-                .data(data)
+            const rects_barchart = gg.selectAll("g.rects_bar").data(data);
 
             const gbar = rects_barchart
                 .enter()
                 .append("g")
-                .attr("class","rects_bar")
-                .merge(rects_barchart)
+                .attr("class", "rects_bar")
+                .merge(rects_barchart);
 
-            gbar.selectAll("title")
-                .data((d)  => [d])
+            gbar
+                .selectAll("title")
+                .data((d) => [d])
                 .join("title")
-                .text(function(d){ return "From "+d[0]+":00 to "+d[0]+":59 there were "+d[1]+" transactions"})
+                .text(
+                    (d) =>
+                        "From " +
+                        d[0] +
+                        ":00 to " +
+                        d[0] +
+                        ":59 there were " +
+                        d[1] +
+                        " transactions"
+                );
 
-           gbar.selectAll("rect.bar")
-               .data((d) => [d])
+            gbar
+                .selectAll("rect.bar")
+                .data((d) => [d])
                 .join("rect")
                 .attr("class", "bar")
                 .transition()
                 .duration(500)
-                .attr("x", function (d) {
-                    return x(d[0]);
-                })
-                .attr("y", function (d) {
-                    return y(d[1]);
-                })
+                .attr("x", (d) => x(d[0]))
+                .attr("y", (d) => y(d[1]))
                 .attr("width", x.bandwidth())
-                .attr("height", function (d) {
-                    return height - y(d[1]);
-                })
-                .attr("fill", "#6C7D47")
-
-            /*gbar
-                .enter()
-                .append("rect")
-                .attr("class", "bar")
-                .merge(rects_barchart)
-                .transition()
-                .duration(1000)
-                .attr("x", function (d) {
-                    return x(d[0]);
-                })
-                .attr("y", function (d) {
-                    return y(d[1]);
-                })
-                .attr("width", x.bandwidth())
-                .attr("height", function (d) {
-                    return height - y(d[1]);
-                })
-                .attr("fill", "#6C7D47")*/
+                .attr("height", (d) => height - y(d[1]))
+                .attr("fill", "#6C7D47");
         },
     },
 };

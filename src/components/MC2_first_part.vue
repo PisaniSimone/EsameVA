@@ -52,10 +52,8 @@
                 </b-row>
             </b-col>
         </b-row>
-        <b-row class="plots pt-3" style="background-color: #54494b">
-            <b-col cols="12">
-                Observations
-            </b-col>
+        <b-row class="obs pt-3" style="background-color: #54494b">
+            <b-col cols="12"> Observations</b-col>
         </b-row>
     </b-container>
 </template>

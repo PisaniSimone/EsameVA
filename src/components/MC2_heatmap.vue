@@ -81,12 +81,7 @@ export default {
             const myColor = d3
                 .scaleLinear()
                 .range(["#E3D081", "#A90022"])
-                .domain([
-                    null,
-                    d3.max(data, function (d) {
-                        return d[2];
-                    }),
-                ]);
+                .domain([null, d3.max(data, (d) => d[2])]);
 
             // Three function that change the tooltip when user hover / move / leave a cell
             const mouseover = function () {
@@ -97,30 +92,29 @@ export default {
                 d3.select(this).style("stroke", "none").style("opacity", 1);
             };
 
-            gg.selectAll("g.rects_heat").remove()
-
-            const rects_heat = gg
-                .selectAll("g.rects_heat")
-                .data(data)
+            const rects_heat = gg.selectAll("g.rects_heat").data(data);
 
             const gs = rects_heat
                 .enter()
                 .append("g")
                 .attr("class", "rects_heat")
-                .merge(rects_heat)
+                .merge(rects_heat);
+
+            rects_heat.exit().remove();
 
             gs.selectAll("title")
                 .data((d) => [d])
                 .join("title")
-                .html(d =>
+                .html(
+                    (d) =>
                         "Number of transations on <strong>Gen " +
                         d[0] +
                         "</strong> at <strong>" +
                         d[1] +
                         "</strong>: <strong>" +
                         d[2] +
-                        "</strong>")
-
+                        "</strong>"
+                );
 
             gs.selectAll("rect.heat")
                 .data((d) => [d])
@@ -130,17 +124,11 @@ export default {
                 .on("mouseleave", mouseleave)
                 .transition()
                 .duration(1000)
-                .attr("x", function (d) {
-                    return x("Gen " + d[0]);
-                })
-                .attr("y", function (d) {
-                    return y(d[1]);
-                })
+                .attr("x", (d) => x("Gen " + d[0]))
+                .attr("y", (d) => y(d[1]))
                 .attr("width", x.bandwidth())
                 .attr("height", y.bandwidth())
-                .style("fill", function (d) {
-                    return myColor(d[2]);
-                })
+                .style("fill", (d) => myColor(d[2]));
         },
     },
 };

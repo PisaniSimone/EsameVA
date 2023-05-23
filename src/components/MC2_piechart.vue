@@ -10,7 +10,6 @@
 <script>
 const d3 = require("d3");
 
-
 let radius, color, svg;
 
 export default {
@@ -19,7 +18,7 @@ export default {
         data_for_piechart: Object,
     },
     mounted() {
-      this.buildpiechart(this.data_for_piechart)
+        this.buildpiechart(this.data_for_piechart);
     },
     watch: {
         data_for_piechart(newVal) {
@@ -69,11 +68,8 @@ export default {
                     return d3.ascending(a.key, b.key);
                 }); // This make sure that group order remains the same in the pie chart
             const data_ready = pie(Object.entries(data));
-
             const arcDegeneration = d3.arc().innerRadius(0).outerRadius(0);
-
             const arcGenerator = d3.arc().innerRadius(0).outerRadius(radius);
-
             const arcGenerator2 = d3
                 .arc()
                 .innerRadius(0)
@@ -82,15 +78,13 @@ export default {
             // map to data
             const paths = svg.selectAll("g.pies").data(data_ready);
 
-            const gpaths = paths
-                .join("g")
-                .attr("class", "pies")
+            const gpaths = paths.join("g").attr("class", "pies");
 
-
-            gpaths.selectAll("title")
-                .data((d)  => [d])
+            gpaths
+                .selectAll("title")
+                .data((d) => [d])
                 .join("title")
-                .html(function(d){ return d.data[0] + ": <strong>" + d.data[1] + "</strong>"})
+                .html((d) => d.data[0] + ": <strong>" + d.data[1] + "</strong>");
 
             const mouseover2 = function () {
                 d3.select(this).transition().duration(1000).attr("d", arcGenerator2);
@@ -100,7 +94,9 @@ export default {
                 d3.select(this).transition().duration(200).attr("d", arcGenerator);
             };
 
-            gpaths.selectAll("path").data((d)  => [d])
+            gpaths
+                .selectAll("path")
+                .data((d) => [d])
                 .join("path")
                 .attr("stroke", "white")
                 .style("stroke-width", "2px")
@@ -114,10 +110,7 @@ export default {
                 .transition()
                 .duration(1000)
                 .attr("d", arcGenerator)
-                .attr("fill", function (d) {
-                    return color(d.data[0]);
-                })
-
+                .attr("fill", (d) => color(d.data[0]));
         },
     },
 };
