@@ -9,9 +9,6 @@
 
 <script>
 const d3 = require("d3");
-import tippy from "tippy.js";
-import "tippy.js/dist/tippy.css";
-
 export default {
     name: "MC2_heatmap",
     props: {
@@ -100,31 +97,39 @@ export default {
                 d3.select(this).style("stroke", "none").style("opacity", 1);
             };
 
+            gg.selectAll("g.rects_heat").remove()
+
             const rects_heat = gg
-                .selectAll("g.rects")
+                .selectAll("g.rects_heat")
                 .data(data)
 
             const gs = rects_heat
                 .enter()
                 .append("g")
-                .attr("class", "rects")
-                .attr("data-tippy-content", function (d) {
-                    return (
+                .attr("class", "rects_heat")
+                .merge(rects_heat)
+
+            gs.selectAll("title")
+                .data((d) => [d])
+                .join("title")
+                .html(d =>
                         "Number of transations on <strong>Gen " +
                         d[0] +
                         "</strong> at <strong>" +
                         d[1] +
                         "</strong>: <strong>" +
                         d[2] +
-                        "</strong>"
-                    );
-                })
-                .merge(rects_heat);
+                        "</strong>")
+
 
             gs.selectAll("rect.heat")
                 .data((d) => [d])
                 .join("rect")
                 .attr("class", "heat")
+                .on("mouseover", mouseover)
+                .on("mouseleave", mouseleave)
+                .transition()
+                .duration(1000)
                 .attr("x", function (d) {
                     return x("Gen " + d[0]);
                 })
@@ -136,19 +141,6 @@ export default {
                 .style("fill", function (d) {
                     return myColor(d[2]);
                 })
-                .on("mouseover", mouseover)
-                .on("mouseleave", mouseleave);
-
-            tippy("[data-tippy-content]", {
-                allowHTML: true,
-                trigger: "mouseenter",
-                touch: false,
-            });
-
-            rects_heat
-                .exit()
-                .attr("data-tippy-content", null)
-                .remove();
         },
     },
 };

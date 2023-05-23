@@ -9,8 +9,7 @@
 
 <script>
 const d3 = require("d3");
-import tippy from "tippy.js";
-import "tippy.js/dist/tippy.css";
+
 
 let radius, color, svg;
 
@@ -20,7 +19,7 @@ export default {
         data_for_piechart: Object,
     },
     mounted() {
-        this.buildpiechart(this.data_for_piechart);
+      this.buildpiechart(this.data_for_piechart)
     },
     watch: {
         data_for_piechart(newVal) {
@@ -81,7 +80,17 @@ export default {
                 .outerRadius(radius + 10);
 
             // map to data
-            const paths = svg.selectAll("path").data(data_ready);
+            const paths = svg.selectAll("g.pies").data(data_ready);
+
+            const gpaths = paths
+                .join("g")
+                .attr("class", "pies")
+
+
+            gpaths.selectAll("title")
+                .data((d)  => [d])
+                .join("title")
+                .html(function(d){ return d.data[0] + ": <strong>" + d.data[1] + "</strong>"})
 
             const mouseover2 = function () {
                 d3.select(this).transition().duration(1000).attr("d", arcGenerator2);
@@ -91,16 +100,14 @@ export default {
                 d3.select(this).transition().duration(200).attr("d", arcGenerator);
             };
 
-            paths
+            gpaths.selectAll("path").data((d)  => [d])
                 .join("path")
                 .attr("stroke", "white")
                 .style("stroke-width", "2px")
                 .style("opacity", 1)
-                .attr("data-tippy-content", function (d) {
-                    return d.data[0] + ": <strong>" + d.data[1] + "</strong>";
-                })
                 .on("mouseover", mouseover2)
                 .on("mouseleave", mouseleave2)
+
                 .transition()
                 .duration(200)
                 .attr("d", arcDegeneration)
@@ -109,13 +116,8 @@ export default {
                 .attr("d", arcGenerator)
                 .attr("fill", function (d) {
                     return color(d.data[0]);
-                });
+                })
 
-            tippy("[data-tippy-content]", {
-                allowHTML: true,
-                trigger: "mouseenter",
-                touch: false,
-            });
         },
     },
 };

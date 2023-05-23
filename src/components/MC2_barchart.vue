@@ -11,9 +11,6 @@
 
 <script>
 const d3 = require("d3");
-import tippy from "tippy.js";
-import "tippy.js/dist/tippy.css";
-
 let x, xAxis, y, yAxis, gg;
 
 const margin = {top: 30, right: 30, bottom: 30, left: 60},
@@ -28,7 +25,7 @@ export default {
         data_for_barchart: Array,
     },
     mounted() {
-        this.buildBarchart(this.data_for_barchart);
+        this.buildBarchart(this.data_for_barchart)
     },
     watch: {
         data_for_barchart(newVal) {
@@ -93,25 +90,27 @@ export default {
             yAxis.transition().duration(1000).call(d3.axisLeft(y));
 
             // Create the rects_barchart variable
-            const rects_barchart = gg.selectAll("rect").data(data);
+            const rects_barchart = gg
+                .selectAll("g.rects_bar")
+                .data(data)
 
-            rects_barchart
+            const gbar = rects_barchart
                 .enter()
-                .append("rect") // Add a new rect for each new elements
-                .attr("data-tippy-content", function (data) {
-                    return (
-                        "From " +
-                        data[0] +
-                        ":00 to " +
-                        data[0] +
-                        ":59 there were " +
-                        data[1] +
-                        " transactions"
-                    );
-                })
-                .merge(rects_barchart) // get the already existing elements as well
-                .transition() // and apply changes to all of them
-                .duration(1000)
+                .append("g")
+                .attr("class","rects_bar")
+                .merge(rects_barchart)
+
+            gbar.selectAll("title")
+                .data((d)  => [d])
+                .join("title")
+                .text(function(d){ return "From "+d[0]+":00 to "+d[0]+":59 there were "+d[1]+" transactions"})
+
+           gbar.selectAll("rect.bar")
+               .data((d) => [d])
+                .join("rect")
+                .attr("class", "bar")
+                .transition()
+                .duration(500)
                 .attr("x", function (d) {
                     return x(d[0]);
                 })
@@ -123,18 +122,25 @@ export default {
                     return height - y(d[1]);
                 })
                 .attr("fill", "#6C7D47")
-                .attr("data-tippy-content", null);
 
-            tippy("[data-tippy-content]", {
-                allowHTML: true,
-                trigger: "mouseenter",
-                touch: false,
-            });
-
-            // If less group in the new dataset, I delete the ones not in use anymore
-            rects_barchart.exit()
-                .attr("data-tippy-content", null)
-                .remove();
+            /*gbar
+                .enter()
+                .append("rect")
+                .attr("class", "bar")
+                .merge(rects_barchart)
+                .transition()
+                .duration(1000)
+                .attr("x", function (d) {
+                    return x(d[0]);
+                })
+                .attr("y", function (d) {
+                    return y(d[1]);
+                })
+                .attr("width", x.bandwidth())
+                .attr("height", function (d) {
+                    return height - y(d[1]);
+                })
+                .attr("fill", "#6C7D47")*/
         },
     },
 };
