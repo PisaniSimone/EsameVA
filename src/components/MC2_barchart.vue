@@ -1,5 +1,5 @@
 <template>
-    <b-col cols="6" id="my_barchart">
+    <b-col cols="4" id="my_barchart">
         <h4 class="mt-2">Time of transactions during the analyzed period:</h4>
         <p>
             (NB: transactions made using only the loyalty card are not taken into
@@ -14,8 +14,8 @@ const d3 = require("d3");
 let x, xAxis, y, yAxis, gg;
 
 const margin = {top: 30, right: 30, bottom: 30, left: 60},
-    width = 600 - margin.left - margin.right,
-    height = 350 - margin.top - margin.bottom;
+    width = 500 - margin.left - margin.right,
+    height = 300 - margin.top - margin.bottom;
 
 // set the dimensions and margins of the graph
 
@@ -25,7 +25,7 @@ export default {
         data_for_barchart: Array,
     },
     mounted() {
-        this.buildBarchart(this.data_for_barchart);
+        this.buildBarchart();
     },
     watch: {
         data_for_barchart(newVal) {
@@ -33,7 +33,7 @@ export default {
         },
     },
     methods: {
-        buildBarchart(data) {
+        buildBarchart() {
             const svg = d3
                 .select("#my_barchart_dataviz")
                 .attr("width", width + margin.left + margin.right)
@@ -64,8 +64,6 @@ export default {
                 .join("g")
                 .style("font-size", 13)
                 .attr("class", "myYaxis");
-
-            this.update2(data);
         },
         update2(data) {
             // Update the X axis

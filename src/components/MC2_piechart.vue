@@ -1,7 +1,7 @@
 <template>
-    <b-col cols="6" id="my_piechart">
-        <h4 class="mt-2">
-            Percentage of use of credit and loyalty cards in transactions:
+    <b-col cols="4" id="my_piechart">
+        <h4 class="mt-2 mb-5">
+            Percentage of use of credit/loyalty cards in transactions:
         </h4>
         <svg id="my_piechart_dataviz"></svg>
     </b-col>
@@ -28,8 +28,8 @@ export default {
     methods: {
         buildpiechart(data) {
             // set the dimensions and margins of the graph
-            let width = 350;
-            let height = 350;
+            let width = 250;
+            let height = 250;
             let margin = 20;
 
             // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
@@ -53,9 +53,6 @@ export default {
                 .scaleOrdinal()
                 .domain(keys)
                 .range(["#54494B", "#BB2543", "#E3D081"]);
-
-            // Initialize the plot with the first dataset
-            this.update(data);
         },
         update(data) {
             // Compute the position of each group on the pie:

@@ -65,6 +65,11 @@ export default {
                 .attr("transform", "translate(-10,0)rotate(-45)")
                 .style("text-anchor", "end");
 
+            gg.selectAll("g.x")
+                .data([0])
+                .select(".domain")
+                .remove();
+
             // Build X scales and axis:
             const y = d3.scaleBand().range([height, 0]).domain(myVars).padding(0.05);
 
@@ -73,7 +78,13 @@ export default {
                 .join("g")
                 .attr("class", "y")
                 .style("font-size", 14)
+                .transition()
+                .duration(1000)
                 .call(d3.axisLeft(y).tickSize(0))
+
+
+            gg.selectAll("g.y")
+                .data([0])
                 .select(".domain")
                 .remove();
 
