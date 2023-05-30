@@ -37,7 +37,7 @@ export default function MapWithLayers() {
             .attr("d", path)
             .attr("stroke","grey")
             .attr("stroke-width", "5")
-            .attr("fill", "white")
+            .attr("fill", "yellow")
             .attr("title", (d) => d.properties.FENAME);
     }
 

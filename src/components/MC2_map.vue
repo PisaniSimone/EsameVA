@@ -1,14 +1,16 @@
 <template>
-    <svg id="ciao" height="900" width="1200">
-        <g class="abila" ref="abila"></g>
+    <svg id="ciao" height="900" width="1200" style="background-color: yellow">
+        <g class="abila" ref="abila" ></g>
     </svg>
 </template>
 
 <script>
+
 import MapWithLayers from "@/assets/js/Layers";
 
 const d3 = require("d3");
 const map = MapWithLayers(); // component to handle the map
+
 export default {
     name: "MC2Map",
     mounted() {

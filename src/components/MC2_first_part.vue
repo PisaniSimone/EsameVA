@@ -126,9 +126,10 @@ export default {
             d3.json("/data/cc_data.json"),
             d3.json("/data/gps.json"),
         ]).then((files) => {
+            //Carico i dati e inizializzo le variabili contenenti i record
             const loyaltydata = files[0],
-                creditdata = files[1];
-            /*gpsdata = files[2];*/
+                creditdata = files[1],
+                gpsdata = files[2];
 
             const loyalty_card = loyaltydata.map(
                 ({location, loyaltynum, price, timestamp}) => {
@@ -154,44 +155,57 @@ export default {
                 }
             );
 
-            /*const gps = gpsdata.map(
-                                  ({id, Timestamp, lat, long}) => {
-                                      return{
-                                          id: +id,
-                                          date: Timestamp.split(" ")[0],
-                                          time: Timestamp.split(" ")[1],
-                                          lat: lat,
-                                          long: long,
-                                          seconds: +Timestamp.split(" ")[1].split(":")[0]*60+Timestamp.split(" ")[1].split(":")[1],
-                                      };
-                                  }
-                              ).filter((d) => d.date === "01/06/2014");
+            const gps = gpsdata
+                .map(({id, Timestamp, lat, long}) => {
+                    return {
+                        id: +id,
+                        date: Timestamp.split(" ")[0],
+                        time: Timestamp.split(" ")[1],
+                        lat: lat,
+                        long: long,
+                        seconds:
+                            +Timestamp.split(" ")[1].split(":")[0] * 3600 +
+                            +Timestamp.split(" ")[1].split(":")[1] * 60 +
+                            +Timestamp.split(" ")[1].split(":")[2],
+                    };
+                })
+                .filter((d) => d.date === "01/06/2014")
+                .filter((d) => d.id < 36);
 
+            let boh = [];
 
-                              let boh = []
-
-                              let cId = d3.group(gps, (d) => (d.id))
-                              cId.forEach(function (element){
-                                  for(let i=0; i<element.length-1; i++){
-                                      if(element[i+1].seconds-element[i].seconds > 100){
-                                          boh.push({id: element[i].id, fermata: element[i].time, ripartenza: element[i+1].time})
-                                      }
-                                  }
-                              })
-                              console.log(boh.sort(d=>d.id))*/
-
+            let cId = d3.group(gps, (d) => d.id);
+            cId.forEach(function (element) {
+                for (let i = 0; i < element.length - 1; i++) {
+                    if (element[i + 1].seconds - element[i].seconds > 120) {
+                        boh.push({
+                            id: element[i].id,
+                            fermata: element[i].time,
+                            ripartenza: element[i + 1].time,
+                        });
+                    }
+                }
+            });
+            /*
+                  console.log(boh.sort((d) => d.id));
+      */
+            //Merging tra i dataset credit_card e loyalty card
             this.merge_data_cards(credit_card, loyalty_card);
 
+            //Inizializzo crossfilter e le diverse dimensioni
             cf = crossfilter(transactions_credit_loyalty);
             dDateLoc = cf.dimension((d) => [d.date, d.location]);
             dLoc = cf.dimension((d) => d.location);
             dDate = cf.dimension((d) => d.date);
 
+            //Gestione dei dati da passare al component MC2_heatmap
             this.data_for_heatmap = dDateLoc
                 .group()
                 .reduceCount()
                 .all()
                 .map((v) => [v.key[0].split("/")[1], v.key[1], v.value]);
+
+            //Gestione delle opzioni per i due formgroup
             this.select_focus.options = dLoc
                 .group()
                 .reduceCount()
@@ -216,6 +230,7 @@ export default {
             this.radio_focus.options = transformator;
             this.radio_focus.selected = this.radio_focus.options[0].value;
 
+            //Gestione dei dati per MC2_barchart, MC2_piechart, MC2_scatterplot
             this.check_focus(this.select_focus.selected, this.radio_focus.selected);
         });
     },
@@ -315,21 +330,58 @@ export default {
         initialize_scatterplot(first_filter, day) {
             let max = [];
             let min = [];
-            let average = [];
             this.data_for_scatterplot = [];
             if (day === "All") {
-                this.data_for_scatterplot.push(["06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16"])
+                this.data_for_scatterplot.push([
+                    "06",
+                    "07",
+                    "08",
+                    "09",
+                    "10",
+                    "11",
+                    "12",
+                    "13",
+                    "14",
+                    "15",
+                    "16",
+                    "17",
+                    "18",
+                    "19",
+                ]);
                 let Tempresult = d3.group(first_filter, (d) => d.date);
                 Tempresult.forEach(function (element) {
                     let idmax = d3.maxIndex(element, (d) => d.price);
                     max.push(element[idmax]);
                     let idmin = d3.minIndex(element, (d) => d.price);
                     min.push(element[idmin]);
-                    let mean = d3.mean(first_filter, (d) => d.price);
-                    average.push({date: element[0].date, mean: mean});
                 });
             } else {
-                this.data_for_scatterplot.push(["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"])
+                this.data_for_scatterplot.push([
+                    "00",
+                    "01",
+                    "02",
+                    "03",
+                    "04",
+                    "05",
+                    "06",
+                    "07",
+                    "08",
+                    "09",
+                    "10",
+                    "11",
+                    "12",
+                    "13",
+                    "14",
+                    "15",
+                    "16",
+                    "17",
+                    "18",
+                    "19",
+                    "20",
+                    "21",
+                    "22",
+                    "23",
+                ]);
                 let second_filter = first_filter.filter((d) => d.time !== null);
                 let Tempresult = d3.group(second_filter, (d) => d.hour);
                 Tempresult.forEach(function (element) {
@@ -337,13 +389,10 @@ export default {
                     max.push(element[idmax]);
                     let idmin = d3.minIndex(element, (d) => d.price);
                     min.push(element[idmin]);
-                    let mean = d3.mean(first_filter, (d) => d.price);
-                    average.push({date: element[0].date, mean: mean});
                 });
             }
-            this.data_for_scatterplot.push({name: "Max", value: max})
-            this.data_for_scatterplot.push({name: "Min", value: min})
-            this.data_for_scatterplot.push({name: "Mean", value: average})
+            this.data_for_scatterplot.push({name: "Min", value: min});
+            this.data_for_scatterplot.push({name: "Max", value: max});
         },
 
         initialize_piechart(first_filter) {

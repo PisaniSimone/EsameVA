@@ -15,7 +15,7 @@ let x, xAxis, y, yAxis, gg;
 
 const margin = {top: 30, right: 30, bottom: 30, left: 60},
     width = 500 - margin.left - margin.right,
-    height = 300 - margin.top - margin.bottom;
+    height = 320 - margin.top - margin.bottom;
 
 // set the dimensions and margins of the graph
 

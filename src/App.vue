@@ -1,9 +1,9 @@
 <template>
-    <header>
+<!--    <header>
         <b-navbar type="dark" variant="danger" class="border-23 border-bottom border-dark">
             <b-navbar-brand href="#">NavBar</b-navbar-brand>
         </b-navbar>
-    </header>
+    </header>-->
     <div id="app">
 
         <MC2_first_part></MC2_first_part>

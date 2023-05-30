@@ -65,7 +65,6 @@ export default {
                     return d3.ascending(a.key, b.key);
                 }); // This make sure that group order remains the same in the pie chart
             const data_ready = pie(Object.entries(data));
-            const arcDegeneration = d3.arc().innerRadius(0).outerRadius(0);
             const arcGenerator = d3.arc().innerRadius(0).outerRadius(radius);
             const arcGenerator2 = d3
                 .arc()
@@ -73,7 +72,7 @@ export default {
                 .outerRadius(radius + 10);
 
             // map to data
-            const paths = svg.selectAll("g.pies").data(data_ready);
+            const paths = svg.selectAll("g.pies").data(data_ready.filter(d => d.value > 0));
 
             const gpaths = paths.join("g").attr("class", "pies");
 
@@ -93,21 +92,24 @@ export default {
 
             gpaths
                 .selectAll("path")
-                .data((d) => [d])
+                .data(function(d) {
+                    console.log(d)
+                    return [d]
+                })
                 .join("path")
                 .attr("stroke", "white")
                 .style("stroke-width", "2px")
                 .style("opacity", 1)
                 .on("mouseover", mouseover2)
                 .on("mouseleave", mouseleave2)
-
-                .transition()
-                .duration(200)
-                .attr("d", arcDegeneration)
+                .attr("d", d3.arc().innerRadius(0).outerRadius(0))
+                .style("opacity", 0)
+                .attr("fill", (d) => color(d.data[0]))
                 .transition()
                 .duration(1000)
+                .style("opacity", 1)
+                .delay(200)
                 .attr("d", arcGenerator)
-                .attr("fill", (d) => color(d.data[0]));
         },
     },
 };
