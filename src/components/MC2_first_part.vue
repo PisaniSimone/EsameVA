@@ -151,6 +151,10 @@ export default {
                         price: +price,
                         last4num: +last4ccnum,
                         hour: timestamp.split(" ")[1].split(":")[0],
+                        seconds:
+                            +timestamp.split(" ")[1].split(":")[0] * 3600 +
+                            +timestamp.split(" ")[1].split(":")[1] * 60 +
+                            +timestamp.split(" ")[1].split(":")[2],
                     };
                 }
             );
@@ -172,6 +176,7 @@ export default {
                 .filter((d) => d.date === "01/06/2014")
                 .filter((d) => d.id < 36);
 
+
             let boh = [];
 
             let cId = d3.group(gps, (d) => d.id);
@@ -182,13 +187,80 @@ export default {
                             id: element[i].id,
                             fermata: element[i].time,
                             ripartenza: element[i + 1].time,
+                            coord: [element[i].lat, element[i].long]
                         });
                     }
                 }
             });
-            /*
-                  console.log(boh.sort((d) => d.id));
-      */
+            let cId2 = d3.group(boh, d => d.id)
+            console.log(cId2)
+
+            let cId3 = d3.group(credit_card.filter((d) => d.date === "01/06/2014"), d => d.last4num)
+            console.log(cId3)
+
+            cId2.forEach(car_array =>{
+                car_array.forEach(car =>{
+                    cId3.forEach(cc_array =>{
+                        let flag = false;
+                        let ccid;
+                        cc_array.forEach(cc =>{
+                            let fermata = this.getMinutes(car.fermata)
+                            let partenza = this.getMinutes(car.ripartenza)
+                            let transazione = this.getMinutes(cc.time)
+
+                            if (partenza - fermata >= transazione - fermata && transazione - fermata > 0){
+                                ccid = cc.last4num
+                                /*if(car.id==35 && ccid == 7108){
+                                    console.log(partenza - fermata)
+                                    console.log(transazione - fermata)
+                                }*/
+                                flag = true
+                            }
+                            else {
+                                flag = false;
+                                /*if(car.id==35 && ccid == 7108){
+                                    console.log("NO")
+                                    console.log(partenza - fermata)
+                                    console.log(transazione - fermata)
+                                }*/
+                                return;
+                            }
+                        })
+                        if(flag == true){
+                            console.log("daje:" + car.id +" - " + ccid)
+                        }
+                    })
+                })
+            })
+            /*cId2.forEach(function(car_array){
+                console.log("***")
+                car_array.forEach(function(car){
+                    cId3.forEach(function(cc_array){
+                        let flag = false;
+                        cc_array.forEach(function(cc){
+                            console.log(car)
+                            console.log(this.Boh)
+                            let fermata = this.getSeconds(car.fermata)
+                            let partenza = this.getSeconds(car.ripartenza)
+                            let transazione = this.getSeconds(cc.time)
+                            console.log(transazione)
+                            if (fermata - partenza > fermata - transazione && fermata - transazione > 0){
+                                flag = true
+                            }
+                            else {
+                                flag = false;
+                                return;
+                            }
+                        })
+                        if(flag){
+                            console.log("daje")
+                        }
+                    })
+
+                })
+            })*/
+
+
             //Merging tra i dataset credit_card e loyalty card
             this.merge_data_cards(credit_card, loyalty_card);
 
@@ -437,6 +509,15 @@ export default {
             }
             this.data_for_barchart.sort();
         },
+
+        getMinutes(time){
+          return +time.split(":")[0] * 60 +
+              +time.split(":")[1]
+        },
+
+        Boh(){
+            return "ciao"
+        }
     },
 };
 </script>

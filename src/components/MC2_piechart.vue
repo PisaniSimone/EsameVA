@@ -93,7 +93,6 @@ export default {
             gpaths
                 .selectAll("path")
                 .data(function(d) {
-                    console.log(d)
                     return [d]
                 })
                 .join("path")
