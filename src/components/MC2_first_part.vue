@@ -137,7 +137,7 @@ export default {
                         date: timestamp,
                         location: location,
                         price: +price,
-                        loyaltyId: loyaltynum,
+                        id: loyaltynum,
                     };
                 }
             );
@@ -149,7 +149,7 @@ export default {
                         time: timestamp.split(" ")[1],
                         location: location,
                         price: +price,
-                        last4num: +last4ccnum,
+                        id: +last4ccnum,
                         hour: timestamp.split(" ")[1].split(":")[0],
                         seconds:
                             +timestamp.split(" ")[1].split(":")[0] * 3600 +
@@ -173,94 +173,9 @@ export default {
                             +Timestamp.split(" ")[1].split(":")[2],
                     };
                 })
-                .filter((d) => d.date === "01/06/2014")
                 .filter((d) => d.id < 36);
 
-
-            let boh = [];
-
-            let cId = d3.group(gps, (d) => d.id);
-            cId.forEach(function (element) {
-                for (let i = 0; i < element.length - 1; i++) {
-                    if (element[i + 1].seconds - element[i].seconds > 120) {
-                        boh.push({
-                            id: element[i].id,
-                            fermata: element[i].time,
-                            ripartenza: element[i + 1].time,
-                            coord: [element[i].lat, element[i].long]
-                        });
-                    }
-                }
-            });
-            let cId2 = d3.group(boh, d => d.id)
-            console.log(cId2)
-
-            let cId3 = d3.group(credit_card.filter((d) => d.date === "01/06/2014"), d => d.last4num)
-            console.log(cId3)
-
-            cId2.forEach(car_array =>{
-                car_array.forEach(car =>{
-                    cId3.forEach(cc_array =>{
-                        let flag = false;
-                        let ccid;
-                        cc_array.forEach(cc =>{
-                            let fermata = this.getMinutes(car.fermata)
-                            let partenza = this.getMinutes(car.ripartenza)
-                            let transazione = this.getMinutes(cc.time)
-
-                            if (partenza - fermata >= transazione - fermata && transazione - fermata > 0){
-                                ccid = cc.last4num
-                                /*if(car.id==35 && ccid == 7108){
-                                    console.log(partenza - fermata)
-                                    console.log(transazione - fermata)
-                                }*/
-                                flag = true
-                            }
-                            else {
-                                flag = false;
-                                /*if(car.id==35 && ccid == 7108){
-                                    console.log("NO")
-                                    console.log(partenza - fermata)
-                                    console.log(transazione - fermata)
-                                }*/
-                                return;
-                            }
-                        })
-                        if(flag == true){
-                            console.log("daje:" + car.id +" - " + ccid)
-                        }
-                    })
-                })
-            })
-            /*cId2.forEach(function(car_array){
-                console.log("***")
-                car_array.forEach(function(car){
-                    cId3.forEach(function(cc_array){
-                        let flag = false;
-                        cc_array.forEach(function(cc){
-                            console.log(car)
-                            console.log(this.Boh)
-                            let fermata = this.getSeconds(car.fermata)
-                            let partenza = this.getSeconds(car.ripartenza)
-                            let transazione = this.getSeconds(cc.time)
-                            console.log(transazione)
-                            if (fermata - partenza > fermata - transazione && fermata - transazione > 0){
-                                flag = true
-                            }
-                            else {
-                                flag = false;
-                                return;
-                            }
-                        })
-                        if(flag){
-                            console.log("daje")
-                        }
-                    })
-
-                })
-            })*/
-
-
+            console.log(gps)
             //Merging tra i dataset credit_card e loyalty card
             this.merge_data_cards(credit_card, loyalty_card);
 
@@ -510,13 +425,102 @@ export default {
             this.data_for_barchart.sort();
         },
 
-        getMinutes(time){
-          return +time.split(":")[0] * 60 +
-              +time.split(":")[1]
+        getMinutes(time) {
+            return +time.split(":")[0] * 60 + +time.split(":")[1];
         },
 
-        Boh(){
-            return "ciao"
+        reaggarangeData(old_data) {
+            let arranged_data = [];
+
+            old_data.forEach((element) => {
+                let flagDate = false;
+                arranged_data.forEach((element2) => {
+                    if (element.date == element2.date) {
+                        flagDate = true;
+                        let flagid = false;
+                        element2.value.forEach((element3) => {
+                            if (element3.id == element.id) {
+                                flagid = true;
+                            }
+                        });
+                        if (flagid == false) {
+                            element2.value.push({id: element.id, value: []});
+                        }
+                    }
+                });
+                if (!flagDate) {
+                    arranged_data.push({date: element.date, value: []});
+                }
+            });
+
+            old_data.forEach((element) => {
+                arranged_data.forEach((date) => {
+                    if (element.date == date.date) {
+                        date.value.forEach((id) => {
+                            if (element.id == id.id) {
+                                id.value.push(element);
+                            }
+                        });
+                    }
+                });
+            });
+
+            return arranged_data;
+        },
+
+
+        check_something(gps_stops2, cc_transactions2){
+            for(let i = 1; i<gps_stops2.length; i++){
+                console.log("giorno: "+i)
+                gps_stops2[i].value.forEach(element =>{
+                    if(element.id == 35) {
+                        console.log(element.value)
+                    }
+                })
+                cc_transactions2[i].value.forEach(element =>{
+                    if (element.id == 2540){
+                        console.log(element.value)
+                    }
+                })
+            }
+        },
+
+        check_next_days(gps_stops2,cc_transactions2, gps_id, cc_id){
+            for(let i = 1; i<gps_stops2.length; i++){
+                let gps_array, cc_array;
+                gps_stops2[i].value.forEach(element=>{
+                    if(element.id == gps_id){
+                        gps_array = element.value
+                    }
+                })
+                cc_transactions2[i].value.forEach(element=>{
+                    if(element.id == cc_id){
+                        cc_array = element.value
+                    }
+                })
+                if(cc_array && gps_array){
+                    for (let j = 0; j < cc_array.length; j++) {
+                        let cc_movement = cc_array[j]
+                        let little_flag = false
+                        let transazione = this.getMinutes(cc_movement.time)
+                        for (let h = 0; h < gps_array.length; h++) {
+                            let gps_movement = gps_array[h]
+
+                            let fermata = this.getMinutes(gps_movement.fermata)
+                            let partenza = this.getMinutes(gps_movement.ripartenza)
+                            if (partenza - fermata >= transazione - fermata && transazione - fermata >= 0) {
+                                little_flag = true
+                                break;
+                            }
+                            little_flag = false
+                        }
+                        if (!little_flag) {
+                            return false
+                        }
+                    }
+                }
+            }
+            return true
         }
     },
 };

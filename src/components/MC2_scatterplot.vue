@@ -195,14 +195,14 @@ export default {
                         data_array[i - 1].push({
                             time: element.hour,
                             value: element.price,
-                            ccard: element.last4num,
+                            ccard: element.id,
                             fulltime: element.time,
                         });
                     } else {
                         data_array[i - 1].push({
                             time: element.date.split("/")[1],
                             value: element.price,
-                            ccard: element.last4num,
+                            ccard: element.id,
                             fulltime: element.date,
                         });
                     }
