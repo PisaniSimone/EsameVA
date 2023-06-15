@@ -1,10 +1,6 @@
 <template>
-    <b-col cols="4" id="my_barchart">
-        <h4 class="mt-2">Time of transactions during the analyzed period:</h4>
-        <p>
-            (NB: transactions made using only the loyalty card are not taken into
-            consideration)
-        </p>
+    <b-col cols="11" class="border-dark border mx-3 shadow-lg my-3 offset-1" id="my_barchart" style="background-color: whitesmoke; height: 220px">
+        <h4 class="my-2">Transactions per hour:</h4>
         <svg id="my_barchart_dataviz"></svg>
     </b-col>
 </template>
@@ -14,8 +10,8 @@ const d3 = require("d3");
 let x, xAxis, y, yAxis, gg;
 
 const margin = {top: 30, right: 30, bottom: 30, left: 60},
-    width = 500 - margin.left - margin.right,
-    height = 320 - margin.top - margin.bottom;
+    width = 600 - margin.left - margin.right,
+    height = 180 - margin.top - margin.bottom;
 
 // set the dimensions and margins of the graph
 
@@ -81,7 +77,7 @@ export default {
             });
             y.domain([0, d3.max(myVars)]);
 
-            yAxis.transition().duration(1000).call(d3.axisLeft(y));
+            yAxis.transition().duration(1000).call(d3.axisLeft(y).ticks(5));
 
             // Create the rects_barchart variable
             const rects_barchart = gg.selectAll("g.rects_bar").data(data);
@@ -118,7 +114,7 @@ export default {
                 .attr("y", (d) => y(d[1]))
                 .attr("width", x.bandwidth())
                 .attr("height", (d) => height - y(d[1]))
-                .attr("fill", "#6C7D47");
+                .attr("fill", "#2B2D42");
         },
     },
 };

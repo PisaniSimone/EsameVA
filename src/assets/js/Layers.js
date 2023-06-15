@@ -13,6 +13,8 @@ export default function MapWithLayers() {
 
     function me(selection) {
         const boundaries = selection.node().parentNode.getBoundingClientRect();
+
+
         projection = d3
             .geoMercator()
             .scale(scale)
@@ -20,12 +22,6 @@ export default function MapWithLayers() {
             .translate([boundaries.width / 2, boundaries.height / 2]);
 
         path = d3.geoPath().projection(projection);
-
-        // path.pointRadius(function(d){
-        // 	return radius(d.properties.count);
-        // })
-
-        // create a group container for map
 
         const paths = selection.selectAll("path").data(selection.datum().features);
 
@@ -35,10 +31,10 @@ export default function MapWithLayers() {
 
         selection.selectAll("path")
             .attr("d", path)
-            .attr("stroke","grey")
-            .attr("stroke-width", "5")
-            .attr("fill", "yellow")
-            .attr("title", (d) => d.properties.FENAME);
+            .attr("stroke","transparent")
+            .attr("stroke-width", "1")
+            .attr("fill", "transparent")
+
     }
 
     // getter and setter for variable scale

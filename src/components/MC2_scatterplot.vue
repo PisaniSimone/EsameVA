@@ -1,7 +1,7 @@
 <template>
-    <b-col cols="4" id="my_scatterplot">
-        <h4 class="mt-2 mb-5">Scatterplot</h4>
-        <svg class="mt-4" id="my_scatterplot_dataviz"></svg>
+    <b-col cols="11" class="border-dark border mx-3 shadow-lg my-3" id="my_scatterplot" style="background-color: whitesmoke; height: 227px">
+        <h4 class="tit">Max/Min price over days:</h4>
+        <svg id="my_scatterplot_dataviz"></svg>
     </b-col>
 </template>
 
@@ -9,8 +9,8 @@
 const d3 = require("d3");
 
 const margin = {top: 30, right: 30, bottom: 30, left: 60},
-    width = 500 - margin.left - margin.right,
-    height = 300 - margin.top - margin.bottom;
+    width = 600 - margin.left - margin.right,
+    height = 180 - margin.top - margin.bottom;
 
 let gg, svg, x, y, xAxis, yAxis;
 
@@ -62,6 +62,16 @@ export default {
                 .attr("class", "myYaxis");
         },
         update3(data) {
+
+            if (data[0].length === 14){
+                d3.select(".tit")
+                    .text("Max/Min price over days:")
+            }
+            else {
+                d3.select(".tit")
+                    .text("Max/Min price over hours:")
+            }
+
             const series = [];
             const modifiedData = this.create_modified_data(data);
 
@@ -92,13 +102,13 @@ export default {
             } else {
                 y.domain([0, d3.max(myYs) + ((500 - (d3.max(myYs) % 500)) % 500)]);
             }
-            yAxis.transition().duration(1000).call(d3.axisLeft(y));
+            yAxis.transition().duration(1000).call(d3.axisLeft(y).ticks(5));
             xAxis.call(d3.axisBottom(x));
 
             const myColor = d3
                 .scaleOrdinal()
                 .domain(series)
-                .range(["#4F69D1", "#DF2935"]);
+                .range(["#8D99AE", "#931F1D"]);
 
             const line = d3
                 .line()
@@ -123,7 +133,6 @@ export default {
                 .style("fill", (d) => myColor(d.name))
                 .attr("class", (d) => d.name);
 
-            // Second we need to enter in the 'values' part of this group
             const punti = gpoint
                 .selectAll("circle")
                 .data((d) => d.values.filter((d) => d.value > 0))
@@ -170,11 +179,11 @@ export default {
 
             legenda
                 .append("text")
-                .attr("x", 400)
+                .attr("x", 500)
                 .attr("y", (d, i) => 30 + i * 20)
                 .text((d) => d.name)
                 .style("fill", (d) => myColor(d.name))
-                .style("font-size", 15)
+                .style("font","bold 16px sans-serif")
                 .on("click", function (event, d) {
                     // is the element currently visible ?
                     let currentOpacity = d3.selectAll("." + d.name).style("opacity");
@@ -195,14 +204,14 @@ export default {
                         data_array[i - 1].push({
                             time: element.hour,
                             value: element.price,
-                            ccard: element.id,
+                            ccard: element.ccid,
                             fulltime: element.time,
                         });
                     } else {
                         data_array[i - 1].push({
                             time: element.date.split("/")[1],
                             value: element.price,
-                            ccard: element.id,
+                            ccard: element.ccid,
                             fulltime: element.date,
                         });
                     }

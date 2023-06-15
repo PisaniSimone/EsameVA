@@ -1,9 +1,16 @@
 <template>
-    <b-col cols="4" id="my_piechart">
-        <h4 class="mt-2 mb-5">
-            Percentage of use of credit/loyalty cards in transactions:
+    <b-col cols="11" class="border-dark border mx-3 shadow-lg offset-1" id="my_piechart" style="background-color: whitesmoke; height: 220px">
+        <h4 class="my-1">
+            Percentage of use of credit/loyalty cards:
         </h4>
-        <svg id="my_piechart_dataviz"></svg>
+        <svg id="my_piechart_dataviz">
+            <rect width="15" height="15" x="350" y="50" fill="#D7B377" stroke="black"></rect>
+            <rect width="15" height="15" x="350" y="70" fill="#931F1D" stroke="black"></rect>
+            <rect width="15" height="15" x="350" y="90" fill="#004F2D" stroke="black"></rect>
+            <text x="370" y="63">Both loyalty and credit card</text>
+            <text x="370" y="83">Only credit card</text>
+            <text x="370" y="103">Only loyalty card</text>
+        </svg>
     </b-col>
 </template>
 
@@ -28,8 +35,8 @@ export default {
     methods: {
         buildpiechart(data) {
             // set the dimensions and margins of the graph
-            let width = 250;
-            let height = 250;
+            let width = 600;
+            let height = 175;
             let margin = 20;
 
             // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
@@ -41,7 +48,7 @@ export default {
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
-                .attr("transform", `translate(${width / 2}, ${height / 2})`);
+                .attr("transform", `translate(${(width / 2) - 50}, ${height / 2})`);
 
             // set the color scale
             let keys = [];
@@ -52,7 +59,7 @@ export default {
             color = d3
                 .scaleOrdinal()
                 .domain(keys)
-                .range(["#54494B", "#BB2543", "#E3D081"]);
+                .range(["#D7B377", "#004F2D", "#931F1D"]);
         },
         update(data) {
             // Compute the position of each group on the pie:
@@ -105,9 +112,9 @@ export default {
                 .style("opacity", 0)
                 .attr("fill", (d) => color(d.data[0]))
                 .transition()
-                .duration(1000)
+                .duration(400)
                 .style("opacity", 1)
-                .delay(200)
+                .delay(100)
                 .attr("d", arcGenerator)
         },
     },
