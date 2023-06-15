@@ -40,7 +40,7 @@
                     Importante è anche porre l'attenzione nel fatto che, in quasi tutti i
                     negozi precedentemente elencati, è possibile notare una più o meno
                     leggera inflessione durante i weekend, giorni nei quali invece tendono
-                    ad aumentare le transazioni effettuate nei pressi di località di svago
+                    ad aumentare le transazioni effettuate nei pressi di luoghi di svago
                     o culturali come <strong>Ahaggo Museum</strong> o
                     <strong>Desafio Golf Course</strong>, generalmente assenti nei giorni
                     infrasettimanali.
