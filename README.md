@@ -1,4 +1,8 @@
-# first_try
+# Esame Visual Analytics
+```
+La visualizzazione è ottimizzata per schermi molto grandi.
+```
+
 
 ## Project setup
 ```
