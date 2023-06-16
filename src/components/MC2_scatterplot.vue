@@ -1,5 +1,5 @@
 <template>
-    <b-col cols="11" class="border-dark border mx-3 shadow-lg my-3" id="my_scatterplot" style="background-color: whitesmoke; height: 227px">
+    <b-col cols="11" class="border-dark border mx-3 shadow-lg my-3" id="my_scatterplot" style="background-color: whitesmoke; height: 227px; overflow: auto">
         <h4 class="tit">Max/Min price over days:</h4>
         <svg id="my_scatterplot_dataviz"></svg>
     </b-col>

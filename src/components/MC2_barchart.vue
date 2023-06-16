@@ -1,5 +1,5 @@
 <template>
-    <b-col cols="11" class="border-dark border mx-3 shadow-lg my-3 offset-1" id="my_barchart" style="background-color: whitesmoke; height: 220px">
+    <b-col cols="11" class="border-dark border mx-3 shadow-lg my-3 offset-1" id="my_barchart" style="background-color: whitesmoke; height: 220px; overflow: auto">
         <h4 class="my-2">Transactions per hour:</h4>
         <svg id="my_barchart_dataviz"></svg>
     </b-col>
@@ -11,7 +11,7 @@ let x, xAxis, y, yAxis, gg;
 
 const margin = {top: 30, right: 30, bottom: 30, left: 60},
     width = 600 - margin.left - margin.right,
-    height = 180 - margin.top - margin.bottom;
+    height = 170 - margin.top - margin.bottom;
 
 // set the dimensions and margins of the graph
 

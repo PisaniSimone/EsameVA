@@ -10,7 +10,7 @@ const d3 = require("d3");
 const d3Sankey = require("d3-sankey");
 
 const margin = {top: 10, right: 10, bottom: 10, left: 10};
-const width = 850 - margin.left - margin.right;
+const width = 800 - margin.left - margin.right;
 let height = 1500 - margin.top - margin.bottom;
 
 

@@ -1,5 +1,5 @@
 <template>
-    <b-col cols="11" class="border-dark border mx-3 shadow-lg offset-1" id="my_piechart" style="background-color: whitesmoke; height: 220px">
+    <b-col cols="11" class="border-dark border mx-3 shadow-lg offset-1" id="my_piechart" style="background-color: whitesmoke; height: 220px; overflow: auto">
         <h4 class="my-1">
             Percentage of use of credit/loyalty cards:
         </h4>

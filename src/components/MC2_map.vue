@@ -18,7 +18,7 @@
                 </b-list-group-item>
             </b-list-group>
         </b-col>
-        <b-col cols="8">
+        <b-col cols="8" style="overflow: auto">
             <svg ref="svg_map" height="733" width="1020" class="border border-dark shadow-md">
                 <image
                         xlink:href="@/assets/MC2-tourist-nuova.jpg"
@@ -88,7 +88,7 @@
                 >
                     <b-card-body class="ps-2 pe-0 pt-0 pb-0">
                         <b-card-text
-                                style="overflow: auto; height: 310px; text-align: start"
+                                style="overflow: auto; height: 290px; text-align: start"
                         >
                             <p
                                     v-for="elem in in_the_last_hour_cc"
@@ -216,7 +216,7 @@ export default {
                 );
 
                 this.initialize_map()
-            },50)
+            },500)
 
         },
     },

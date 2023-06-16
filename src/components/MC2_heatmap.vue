@@ -1,5 +1,5 @@
 <template>
-    <b-col cols="8" id="my_heatmap" class="pb-2">
+    <b-col cols="8" id="my_heatmap" class="pb-2" style="overflow: auto">
         <h4 class="mt-3">
             Number of transactions for each place during the analyzed period:
         </h4>

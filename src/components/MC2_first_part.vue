@@ -28,122 +28,108 @@
                 <h1>Observations:</h1>
             </b-col>
 
-            <b-col cols="8" class="offset-2 mb-3" style="text-align: start">
+            <b-col cols="10" class="offset-1 mb-3" style="text-align: start">
                 <p>
-                    Come possiamo vedere da questa panoramica iniziale, tra gli esercizi
-                    commerciali presenti all'interno dell'isola di Abila possiamo notarne
-                    alcuni decisamente più frequentati di altre: principalmente si parla
-                    di café e ristoranti come per esempio
-                    <strong>Katerina's Cafè</strong>, <strong>Hippokampos</strong>,
+                    As we can see from this initial overview, among the shops on the Abila island we can see some that
+                    are much more popular than the others, mainly cafès and restaurants such as <strong>Katerina's
+                    Cafè</strong>, <strong>Hippokampos</strong>,
                     <strong>Brew've Been Served</strong>,
-                    <strong>Hallowed Grounds</strong> o <strong>Guy's Gyros</strong>.
-                    Importante è anche porre l'attenzione nel fatto che, in quasi tutti i
-                    negozi precedentemente elencati, è possibile notare una più o meno
-                    leggera inflessione durante i weekend, giorni nei quali invece tendono
-                    ad aumentare le transazioni effettuate nei pressi di luoghi di svago
-                    o culturali come <strong>Ahaggo Museum</strong> o
-                    <strong>Desafio Golf Course</strong>, generalmente assenti nei giorni
-                    infrasettimanali.
+                    <strong>Hallowed Grounds</strong> or <strong>Guy's Gyros</strong>.
+                    It's also important to pay attention over the fact that, in almost all the shops
+                    listed above, its possible to notice a - more or less - slight drop in the number of transactions
+                    during the weekends, days in which the transactions carried out in cultural or leisure places such
+                    as
+                    Ahaggo Museum or Desafio Golf Course tend to increase.
                 </p>
 
                 <p>
-                    Un ulteriore aspetto interessante è rappresentato dalle analisi
-                    statistiche effettuate sui dati, facendo riferimento ad indici quali
-                    media, modia e deviazione standard. L'analisi, svolta a partire dagli
-                    esercizi commerciali prima e sui giorni poi, ha messo in luce una
-                    grande disparità circa le transazioni tra i diversi negozi: il fatto
-                    che la moda e, soprattutto, la deviazione standard abbiano dei valori
-                    superiori alla media aritmetica, identifica una grande dispersione dei
-                    diversi valori rispetto ad essa.
+                    Another interesting aspect is rapresented by the statistical analysis of the data, referring to
+                    indices such as mean, mode and standard deviation. The analysis, carried out starting from the shops
+                    first and then from the days,
+                    has highlighted a great disparity over the transactions among the different shops: the fact that the
+                    mode and, above all, the standard deviation have values much
+                    higher than the mean, identify a large dispersion of the values compared to it
+                </p>
+
+                <p>On the other hand, those anomalies don't appear so consistently in the case of the analysis over
+                    days: here the pattern
+                    seems to be decidedly more stable, with trends that tend to repeat themselves such as
+                    the one already described above about weekends.</p>
+
+                <p>
+                    The filters also allow us to have an overview over the transactions made using only
+                    <b-link @click="set_radioMap('credit')">credit cards</b-link>
+                    or
+                    <b-link @click="set_radioMap('loyalty')">loyalty cards</b-link>
+                    .
+                    The algorithm on which the data matching between the credit cards and loyalty cards
+                    datasets was
+                    based is, unfortunately, far from being reliable for several reasons, first of all, the data
+                    structure. <br>
+                    The matching was carried out on the basis of three fields: location, price and timestamp of the
+                    transaction. Among those three data, only the first one doesn't present any
+                    particular problem. On the other hand, both the credit cards and loyalty cards datasets had a "date"
+                    field, with the difference that, in the first case, there was also the transaction time which is
+                    absent in the second case.<br>
+                    As far as the price is concerned, the algorithm doesn't take in account its possible variations such
+                    as the case of eventual cashbacks or loyalty card's discounts
+                    which in this way would make the money movements in the same transaction looking different.
                 </p>
 
                 <p>
-                    D'altro canto, queste anomalie non si presentano in maniera così netta
-                    nel caso dell'analisi effettuata sui giorni: qui i patterns sembrano
-                    essere decisamente più stabili, con dei trend che tendono a ripetersi
-                    come, ad esempio, quello già descritto in precedenza dei fine
-                    settimana.
-                </p>
-
-                <p>
-                    I filtri ci permettono anche di avere una panoramica sulle transazioni
-                    effettuate usando solo <b-link @click="set_radioMap('credit')">carta di credito</b-link> o solo <b-link @click="set_radioMap('loyalty')">tessera fedeltà</b-link>. <br/>
-                    L'algoritmo su cui si è basato il matching dei dati tra i dataset
-                    delle carte di credito e delle tessere fedeltà è, purtroppo,
-                    tutt'altro che affidabile per diversi motivi, primo tra tutti, la
-                    struttura dei dati.
-                </p>
-
-                <p>
-                    Il matching è stato effettuato sulla base di tre campi: luogo, prezzo
-                    e data della transazione. Tra questi tre dati, solo il primo non
-                    presenta particolari problemi: sia il dataset delle carte di credito
-                    che quello delle tessere fedeltà, riportavano un campo "data", con la
-                    differenza che nel primo caso era presente anche il dato dell'orario
-                    della transazione, assente invece nel secondo caso. Per quanto
-                    riguarda invece il prezzo, l'algoritmo non tiene conto delle sue sue
-                    possibili variazioni come, ad esempio, nel caso di eventuali cashback
-                    o di sconti per la tessera fedeltà che in questo modo renderebbero
-                    differente lo spostamento di denaro di una stessa transazione.
-                </p>
-
-                <p>
-                    L'algoritmo, tutto sommato, ha dato dei buoni risultati mostrando che
-                    possa esser possibile effettuare una transazione tramite contanti o
-                    senza l'utilizzo di una tessera fedeltà. <br/>
-                    Il matching però non è riuscito a tracciare delle relazioni 1:1 tra le
-                    carte di credito e le tessere fedeltà, sia a causa della già descritta
-                    scarsa affidabilità dell'algoritmo ma anche del fatto che le ultime
-                    cifre delle carte di credito (usate come id) non siano necessariamente
-                    univoche.
+                    In conclusion, the algorithm has given good results showing that it may be possible to carry out a
+                    transaction using cash or without using a loyalty card.
+                    However, the matching failed to trace a 1 to 1 relationship between credit cards and loyalty cards,
+                    both due to the already described low reliability of the algorithm but also due to the fact that the
+                    last digits of the credit cards (used as ID) are not necessarily unique.
                 </p>
             </b-col>
         </b-row>
 
         <b-row class="plots pt-3 section2">
-                    <b-col cols="12">
-                        <h1>Focused View</h1>
-                    </b-col>
+            <b-col cols="12">
+                <h1 id="focus">Focused View</h1>
+            </b-col>
 
-                    <b-col cols="3" class="offset-2">
-                        <b-form-group
-                                label="Chose a place to focus on:"
-                                label-cols="12"
-                                content-cols="12"
-                        >
-                            <b-form-select
-                                    v-model="select_focus.selected"
-                                    :options="select_focus.options"
-                            ></b-form-select>
-                        </b-form-group>
-                    </b-col>
-                    <b-col cols="7">
-                        <b-form-group
-                                label="Chose a day to focus on:"
-                                label-cols="12"
-                                content-cols="12"
-                                class="mb-3"
-                        >
-                            <b-form-radio-group
-                                    v-model="radio_focus.selected"
-                                    :options="radio_focus.options"
-                                    size="sm"
-                                    buttons
-                            ></b-form-radio-group>
-                        </b-form-group>
-                    </b-col>
-                    <MC2_sankey :data_for_sankey="this.data_for_sankey"></MC2_sankey>
-                    <b-col cols="5">
-                        <MC2_piechart
-                                :data_for_piechart="this.data_for_piechart"
-                        ></MC2_piechart>
-                        <MC2_barchart
-                                :data_for_barchart="this.data_for_barchart"
-                        ></MC2_barchart>
-                        <MC2_scatterplot
-                                :data_for_scatterplot="this.data_for_scatterplot"
-                        ></MC2_scatterplot>
-                    </b-col>
+            <b-col cols="3" class="offset-2">
+                <b-form-group
+                        label="Chose a place to focus on:"
+                        label-cols="12"
+                        content-cols="12"
+                >
+                    <b-form-select
+                            v-model="select_focus.selected"
+                            :options="select_focus.options"
+                    ></b-form-select>
+                </b-form-group>
+            </b-col>
+            <b-col cols="7">
+                <b-form-group
+                        label="Chose a day to focus on:"
+                        label-cols="12"
+                        content-cols="12"
+                        class="mb-3"
+                >
+                    <b-form-radio-group
+                            v-model="radio_focus.selected"
+                            :options="radio_focus.options"
+                            size="sm"
+                            buttons
+                    ></b-form-radio-group>
+                </b-form-group>
+            </b-col>
+            <MC2_sankey :data_for_sankey="this.data_for_sankey"></MC2_sankey>
+            <b-col cols="5">
+                <MC2_piechart
+                        :data_for_piechart="this.data_for_piechart"
+                ></MC2_piechart>
+                <MC2_barchart
+                        :data_for_barchart="this.data_for_barchart"
+                ></MC2_barchart>
+                <MC2_scatterplot
+                        :data_for_scatterplot="this.data_for_scatterplot"
+                ></MC2_scatterplot>
+            </b-col>
         </b-row>
         <b-row
                 class="obs pt-3 my-3"
@@ -153,52 +139,67 @@
                 <h1>Observations:</h1>
             </b-col>
 
-            <b-col cols="8" class="offset-2 mb-3" style="text-align: start">
+            <b-col cols="10" class="offset-1 mb-3" style="text-align: start">
                 <p>
-                    In questa sezione, l'obiettivo fondamentale è quello di dare una
-                    visione più "focus oriented" dei dati, analizzando le transazioni nei
-                    diversi esercizi commerciali durante i vari giorni coperti dallo
-                    studio.
+                    In this section, the goal is to give a more "focus oriented" view of the data,
+                    analyzing the transactions in the different commercial establishments during the various days
+                    covered by the study.
                 </p>
 
                 <p>
-                    L'analisi viene condotta tramite l'inserzione di quattro diversi
-                    grafici.<br/>
-                    Il primo è un diagramma di Sankey che serve per tracciare la relazione
-                    [carta di credito-tessera fedeltà-orario transazione] relativamente
-                    alle transazioni effettuate durante i vari giorni.<br/>
-                    Il secondo è un piechart utilizzato per mostrare le percentuali delle
-                    transazioni condotte sia con la carta di credito che con la tessera
-                    fedeltà, quelle effettuate utilizzando solo la carta di credito e,
-                    infine, quelle riportanti solo l'id della tessera fedeltà.<br/>
-                    Il terzo è un barchart che, in un certo senso, semplifica l'analisi
-                    condotta all'interno del diagramma di Sankey, rendendo una
-                    visualizzazione che ci permette in maniera più rapida di comprendere i
-                    vari trend relativi agli orari delle diverse operazioni
-                    commerciali.<br/>
-                    L'ultimo è uno scatterplot che permette di visualizzare i picchi
-                    massimi e minimi di prezzo sia per giorno che per ora nei diversi
-                    esercizi commerciali.
+                    The analysis is conducted through the insertion of four different graphs.<br/>
+                    The first one is a Sankey diagram which is used to trace the relationship [credit card-loyalty
+                    card-transaction time] between each transaction carried out during the various days.<br/>
+                    The second one is a piechart used to show the percentages of transactions conducted with both
+                    the credit card and the loyalty card, those carried out using only the credit card and those made
+                    using only the loyalty card.<br/>
+                    The third one is a barchart which, in a certain sense, simplifies the analysis conducted within the
+                    Sankey diagram, creating a visualization that allows us to quickly understand the various trends
+                    relating to the times of the various commercial operations.<br/>
+                    The last one is a scatterplot that allows us to view the maximum and minimum price peaks both by day
+                    and by hour in the carious commercial establishment.
                 </p>
 
                 <p>
-                    L'osservazione dei grafici, oltre a confermare la sensazione circa alcuni trend caratterizzanti gli esercizi commerciali,
-                    ha portato alla luce diverse anomalie presenti all'interno dei dati
+                    The observation of the graphs, in addition to confirming the presence of some trends characterizing
+                    the commercial establishments, has brought to light various anomalies present in the data.
                 </p>
 
                 <ol>
-                    <li>Nelle locazioni Bean There Done That, Brewed Awakenings, Coffee Shack e Jack's Magical Beans, tutte le transazioni
-                    sembrano esser state fatte esattamente alle ore 12:00.</li>
-                    <li>Al Kronos Mart, le transazioni sembrano esser state effettuate in orari decisamente insoliti rispetto a quelli
-                    di un normale mercato, probabilmente a causa di un errore esse sono state shiftate di un certo quantitativo di ore.</li>
-                    <li>Osservando i minimi e i massimi dei prezzi delle transazioni, nel giorno 13 gennaio alle ore 19:20, al Frydos Autosupply n' More
-                        sembra esser stata effettuata una transazione il cui prezzo si distacca in maniera spropositata dalla media.</li>
+                    <li>At
+                        <b-link href="#focus" @click="set_focus('All','Bean There Done That')">Bean There Done That
+                        </b-link>
+                        ,
+                        <b-link href="#focus" @click="set_focus('All','Brewed Awakenings')">Brewed Awakenings</b-link>
+                        ,
+                        <b-link href="#focus" @click="set_focus('All','Coffee Shack')">Coffee Shack</b-link>
+                        ,
+                        and
+                        <b-link href="#focus" @click="set_focus('All','Jack\'s Magical Beans')">Jack's Magical Beans
+                        </b-link>
+                        ,
+                        all transactions appear to have taken place at exactly 12:00 PM.
+                    </li>
+                    <li>At
+                        <b-link href="#focus" @click="set_focus('All','Kronos Mart')">Kronos Mart</b-link>
+                        ,
+                        the transactions seem to have been carried out at very unusual times compared to those of a
+                        normal market, probably due to an error they were shifted by a certain amount of hours.
+                    </li>
+                    <li>Looking at the lows and highs of transaction prices, on January 13th at 7:20 pm, a transaction
+                        appears to have been made at
+                        <b-link href="#focus" @click="set_focus('01/13/2014','Frydos Autosupply n\' More')">Frydos
+                            Autosupply n' More
+                        </b-link>
+                        whose price deviates disproportionately
+                        from the average.
+                    </li>
                 </ol>
             </b-col>
         </b-row>
         <b-row class="maps pt-3">
             <b-col cols="12" class="mb-3">
-                <h1>Geo-Spatial View</h1>
+                <h1 id="geospat">Geo-Spatial View</h1>
             </b-col>
             <b-col cols="2">
                 <b-button @click="show_legend">Show All</b-button>
@@ -221,23 +222,150 @@
             ></MC2_map>
         </b-row>
         <b-row
-                class="obs pt-3 my-3"
+                class="obs pt-3 mt-3"
                 style="background-color: #001427; color: whitesmoke"
         >
             <b-col cols="8" class="my-3 offset-2">
                 <h1>Observations:</h1>
             </b-col>
 
-            <b-col cols="8" class="offset-2 mb-3" style="text-align: start">
+            <b-col cols="10" class="offset-1 mb-3" style="text-align: start">
                 <p>
-                    In questa ultima sezione, il focus principale è stato quello di analizzare i dati geospaziali relativi soprattutto
-                    agli spostamenti dei diversi abitanti dell'isola all'interno della città.
-                    La sezione si compone di un filtro sui giorni ed uno sugli orari, permettendo di corprire tutti i secondi presenti all'interno dell'arco
-                    di una giornata.
+                    In this last section, the main focus was on analyzing the geospatial data relating to the
+                    movements of the different inhabitants of the island within the city. The section consists of a
+                    filter on the days and one on the time (allowing us to cover all the seconds present within the
+                    space of a day), two windows showing the people in movement and the last transactions made and a map
+                    on which the routes of citizens are traced starting from the gps dataset.
                 </p>
                 <p>
+                    By analyzing the movements, we are able to define a certain pattern typically followed by all the
+                    inhabitants of the island.</p>
+            </b-col>
+            <b-col cols="5" class="offset-1" style="text-align: start">
+                <p><b>During the weekdays:</b>
+                </p>
+                <ul>
+                    <li>From 6:30 am to 8:30 am leave the house</li>
+                    <li>Stop for a coffee for a few minutes</li>
+                    <li>Go to the office</li>
+                    <li>Around noon, leave the office to go to a restaurant or café to eat</li>
+                    <li>By 2.30 pm return to the office</li>
+                    <li>Leave the office between 5:00 pm and 6:00 pm to go home or dine out</li>
+                </ul>
+            </b-col>
+            <b-col cols="4" class="offset-1" style="text-align: start">
+                <p><b>During the weekends:</b></p>
+                <ul>
+                    <li>Around noon, leave the house to go shopping or to have lunch</li>
+                    <li>Go back home</li>
+                    <li>In the evening, leave the house to go shopping or to dine</li>
+                </ul>
+            </b-col>
 
+
+            <b-col cols="10" class="offset-1" style="text-align: start">
+                <hr class="col-12">
+                <p>
+                    Based on these recurring patterns, by analyzing the data, it is possible to trace relationships
+                    among the different inhabitants of the island:
                 </p>
+                <ul>
+                    <li><b>Brand Tempestad</b> (#33) and <b>Elsa Orilla</b> (#7) may have an affair, some days during
+                        lunchtime they
+                        seem to rent an hotel room and stay there for about two hours -
+                        <b-link href="#geospat" @click="set_map('01/08/2014', [7,33])">Check</b-link>
+                    </li>
+                    <li><b>Lidelse Dedos</b> (#14) and <b>Birgitta Frente</b> (#18) live together -
+                        <b-link href="#geospat" @click="set_map('01/06/2014', [14,18])">Check</b-link>
+                    </li>
+                    <li><b>Brand Tempestad</b> (#33), <b>Minke Mies</b> (#24) and <b>Scen Flecha</b> (#17) live together
+                        -
+                        <b-link href="#geospat" @click="set_map('01/06/2014', [17,24,33])">Check</b-link>
+                    </li>
+                    <li><b>Linnea Bergen</b> (#6), <b>Kanon Herrero</b> (#25) and <b>Bertrand Ovan</b> (#29) live
+                        together -
+                        <b-link href="#geospat" @click="set_map('01/06/2014', [6,25,29])">Check</b-link>
+                    </li>
+                    <li><b>Felix Resumir</b> (#30), <b>Varja Lagos</b> (#23) and <b>Adra Nubarron</b> (#22) live
+                        together -
+                        <b-link href="#geospat" @click="set_map('01/06/2014', [22,23,30])">Check</b-link>
+                    </li>
+                    <li><b>Hennie Osvaldo</b> (#21), <b>Isia Vann</b> (#16), <b>Loreto Bodrogi</b> (#15) and <b>Inga
+                        Ferro</b> (#13) live together -
+                        <b-link href="#geospat" @click="set_map('01/06/2014', [13,15,16,21])">Check</b-link>
+                    </li>
+                    <li><b>Nils Calixsto</b> (#1), <b>Lars Azada</b> (#2), <b>Felix Balas</b> (#3), <b>Isak Baza</b>
+                        (#5), <b>Linnea Bergen</b> (#6),
+                        <b>Elsa Orilla</b> (#7), <b>Lucas Alcazar</b> (#8), <b>Gustav Cazar</b> (#9), <b>Axel Calzas</b>
+                        (#11), <b>Lidelse Dedos</b> (#14),
+                        <b>Birgitta Frente</b> (#18), <b>Vira Frente</b> (#19), <b>Kanon Herrero</b> (#25), <b>Marin
+                            Onda</b> (#26) and
+                        <b>Brand Tempestad</b> (#33) get together from 7:00 pm to late night on 10-1 at Lars Azada's
+                        house -
+                        <b-link href="#geospat" @click="set_map('01/10/2014', [1,2,3,5,6,7,8,9,11,14,18,19,25,26,33])">
+                            Check
+                        </b-link>
+                    </li>
+                    <li>A group of people meet every Sunday to play golf. On 19-1 there are <b>Ingrid Barranco</b> (#4),
+                        <b>Ada Campo-Corrente</b> (#10), <b>Sten Sanjorge Jr.</b> (#31), <b>Orhan Strum</b> (#32), <b>Willem
+                            Vasco-Pais</b> (#35) from 2:00 pm to 4:00 pm
+                        while a week before Sten and Orhan weren't there. -
+                        <b-link href="#geospat" @click="set_map('01/19/2014', [4,10,31,32,35])">Check</b-link>
+                    </li>
+                </ul>
+                <hr class="col-12">
+                <p>
+                    In addition to this, it is also possible to define some anomalies and suspicious shifts that seem to
+                    deviate too much from the usual identified trends:</p>
+                <ul>
+                    <li><b>Gustav Cazar</b> (#9) seems to be very suspicious, the last movement of the day never
+                        coincide with the first one of the following one. -
+                        <b-link href="#geospat" @click="set_map('01/06/2014', [9])">Check</b-link>
+                    </li>
+                    <li><b>Nils Calixsto</b> (#1) often works overtime and then returns home after midnight from the office -
+                        <b-link href="#geospat" @click="set_map('01/07/2014', [1])">Check</b-link>
+                    </li>
+                    <li>A series of suspicious shifts are visible around 3:00 am:
+                        <ul>
+                            <li>07-1: <b>Loreto Bodrogi</b> (#15) -
+                                <b-link href="#geospat" @click="set_map('01/07/2014', [15])">Check</b-link>
+                            </li>
+                            <li>09-1: <b>Loreto Bodrogi</b> (#15) and <b>Minke Mies</b> (#24) -
+                                <b-link href="#geospat" @click="set_map('01/09/2014', [15,24])">Check</b-link>
+                            </li>
+                            <li>11-1: <b>Isia Vann</b> (#16) and <b>Hennie Osvaldo</b> (#21) -
+                                <b-link href="#geospat" @click="set_map('01/11/2014', [16,21])">Check</b-link>
+                            </li>
+                            <li>14-1: <b>Hennie Osvaldo</b> (#21) and <b>Minke Mies</b> (#24) -
+                                <b-link href="#geospat" @click="set_map('01/14/2014', [21,24])">Check</b-link>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><b>Isande Borrasca</b> (#28) seems to make very strange movements every day, with non-continuous
+                        shifts. Furthermore, he/she always stops far from the GAStech headquarters during working hours,
+                        unlike the other colleagues -
+                        <b-link href="#geospat" @click="set_map('01/06/2014', [28])">Check</b-link>
+                    </li>
+                    <li><b>Minke Mies</b> (#24), <b>Hennie Osvaldo</b> (#21), <b>Inga Ferro</b> (#13) and <b>Loreto
+                        Bodrogi</b> (#15), in a time that seems to start from 11:30, tend to leave work early to stop
+                        for about an hour in places not registered on the map. -
+                        <b-link href="#geospat" @click="set_map('01/07/2014', [24,13,15])">Check1</b-link>
+                        -
+                        <b-link href="#geospat" @click="set_map('01/08/2014', [15,24,21])">Check2</b-link>
+                    </li>
+                </ul>
+                <p class="mt-5"><b>PS:</b> purtroppo c'è stato un problema con i link di questa ultima sezione. Non avevo pensato
+                    originariamente di inserirli per cui ho collocato il dato dei giorni nel componente principale e
+                    quello
+                    dell'orario all'interno di un altro componente - quello della mappa - rendendo (da quanto ho capito)
+                    impossibile la modifica del dato presente all'interno del sottocomponente a partire dal componente
+                    principale.
+                    <br>Essendomi reso conto troppo tardi di questa dimenticanza, non sono riuscito a correggere
+                    andando
+                    a modificare l'architettura dell'app.
+                    L'idea originale era quello di aggiungere, oltre al cambio di giorno e all'highlighting delle
+                    persone coinvolte, anche l'orario in cui lo spostamento o l'anomalia si fosse verificata.<br><br>
+                    Mi scusi per l'errore.</p>
             </b-col>
         </b-row>
     </b-container>
@@ -245,15 +373,14 @@
 
 <script>
 import MC2_map from "@/components/MC2_map.vue";
-
-const d3 = require("d3");
-
 import {crossfilter} from "crossfilter/crossfilter";
 import MC2_heatmap from "@/components/MC2_heatmap.vue";
 import MC2_piechart from "@/components/MC2_piechart.vue";
 import MC2_barchart from "@/components/MC2_barchart.vue";
 import MC2_scatterplot from "@/components/MC2_scatterplot.vue";
 import MC2_sankey from "@/components/MC2_sankey.vue";
+
+const d3 = require("d3");
 
 let cf;
 let dDateLoc;
@@ -330,11 +457,6 @@ export default {
                 creditdata = files[1],
                 gpsdata = files[2];
 
-            gpsdata.forEach(el => {
-                delete el.CurrentEmploymentType;
-                delete el.CurrentEmploymentTitle;
-            })
-
             loyalty_card = loyaltydata.map(
                 ({location, loyaltynum, price, timestamp}) => {
                     return {
@@ -410,8 +532,7 @@ export default {
             this.select_focus.selected = this.select_focus.options[0];
 
             transformator = [{text: "All", value: "All"}];
-            let accumulator = [];
-            accumulator = dDate
+            let accumulator = dDate
                 .group()
                 .reduceCount()
                 .all()
@@ -476,15 +597,38 @@ export default {
         },
     },
     methods: {
-        set_radioMap(selector){
+        set_map(selector1, selector3) {
+            console.log(selector3)
+            this.radio_map.selected = selector1
+            setTimeout(() => {
+                this.hide_legend()
+                for (let i = 0; i < selector3.length; i++) {
+                    let el = document.getElementById("id" + selector3[i])
+                    el.setAttribute("aria-current", false)
+                    el.classList.remove("active")
+                    if (d3.selectAll("g.id" + selector3[i]).size() > 0) {
+                        d3.selectAll("g.id" + selector3[i])
+                            .transition()
+                            .duration(700)
+                            .style("opacity", 1);
+                    }
+                }
+            }, 1000)
+
+        },
+        set_focus(selector1, selector2) {
+            this.radio_focus.selected = selector1
+            this.select_focus.selected = selector2
+        },
+        set_radioMap(selector) {
             this.radio_heatmap.selected = selector
         },
-        hide_legend(){
+        hide_legend() {
             let test = document.getElementsByClassName("legendItem")
-            for(let i = 0; i<test.length; i++){
+            for (let i = 0; i < test.length; i++) {
                 test[i].setAttribute("aria-current", true)
                 test[i].classList.add("active")
-                if(d3.selectAll("g." + test[i].id).size() > 0){
+                if (d3.selectAll("g." + test[i].id).size() > 0) {
                     d3.selectAll("g." + test[i].id)
                         .transition()
                         .duration(700)
@@ -492,12 +636,12 @@ export default {
                 }
             }
         },
-        show_legend(){
+        show_legend() {
             let test = document.getElementsByClassName("legendItem")
-            for(let i = 0; i<test.length; i++){
+            for (let i = 0; i < test.length; i++) {
                 test[i].setAttribute("aria-current", false)
                 test[i].classList.remove("active")
-                if(d3.selectAll("g." + test[i].id).size() > 0){
+                if (d3.selectAll("g." + test[i].id).size() > 0) {
                     d3.selectAll("g." + test[i].id)
                         .transition()
                         .duration(700)
@@ -594,17 +738,14 @@ export default {
             time.forEach((el) => {
                 let i = this.data_for_sankey.nodes.length;
                 this.data_for_sankey.nodes.push({node: i, name: el[0]});
-                return;
             });
             cc.forEach((el) => {
                 let i = this.data_for_sankey.nodes.length;
                 this.data_for_sankey.nodes.push({node: i, name: el[0]});
-                return;
             });
             lc.forEach((el) => {
                 let i = this.data_for_sankey.nodes.length;
                 this.data_for_sankey.nodes.push({node: i, name: el[0]});
-                return;
             });
             first_filter.forEach((el) => {
                 let time, cc, lc;
@@ -617,7 +758,6 @@ export default {
                     }
                     if (el.loid === el2.name) {
                         lc = el2.node;
-                        return;
                     }
                 });
 
@@ -767,7 +907,7 @@ export default {
         },
 
         get_geojson_from_gps(val) {
-            const fc = {
+            return {
                 type: "FeatureCollection",
                 features: gps
                     .filter((d) => d.date === String(val))
@@ -789,7 +929,6 @@ export default {
                         },
                     })),
             };
-            return fc;
         },
 
         map_data() {
