@@ -1,5 +1,5 @@
 <template>
-    <b-col cols="6" class="offset-1"><h4 class="mt-2">Time of transactions</h4></b-col>
+    <b-col cols="6" class="offset-1"><h4 class="mt-2">Transactions data [CreditCard - LoyaltyCard - Price - Time]</h4></b-col>
     <b-col cols="6" class="offset-1 border-dark border shadow-lg" align-v="center" id="my_sankeyt" style="height: 700px; align-items: center; overflow: auto; background-color: whitesmoke">
         <svg class="mt-4 mx-auto" id="my_sankey_dataviz"></svg>
     </b-col>

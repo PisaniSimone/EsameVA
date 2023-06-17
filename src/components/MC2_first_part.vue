@@ -149,7 +149,7 @@
                 <p>
                     The analysis is conducted through the insertion of four different graphs.<br/>
                     The first one is a Sankey diagram which is used to trace the relationship [credit card-loyalty
-                    card-transaction time] between each transaction carried out during the various days.<br/>
+                    card-price of transaction-transaction time] between each transaction carried out during the various days.<br/>
                     The second one is a piechart used to show the percentages of transactions conducted with both
                     the credit card and the loyalty card, those carried out using only the credit card and those made
                     using only the loyalty card.<br/>
@@ -598,7 +598,6 @@ export default {
     },
     methods: {
         set_map(selector1, selector3) {
-            console.log(selector3)
             this.radio_map.selected = selector1
             setTimeout(() => {
                 this.hide_legend()
@@ -735,6 +734,7 @@ export default {
             let time = d3.flatGroup(first_filter, (d) => d.time);
             let cc = d3.flatGroup(first_filter, (d) => d.ccid);
             let lc = d3.flatGroup(first_filter, (d) => d.loid);
+            let price = d3.flatGroup(first_filter, (d) => d.price);
             time.forEach((el) => {
                 let i = this.data_for_sankey.nodes.length;
                 this.data_for_sankey.nodes.push({node: i, name: el[0]});
@@ -747,8 +747,12 @@ export default {
                 let i = this.data_for_sankey.nodes.length;
                 this.data_for_sankey.nodes.push({node: i, name: el[0]});
             });
+            price.forEach((el) => {
+                let i = this.data_for_sankey.nodes.length;
+                this.data_for_sankey.nodes.push({node: i, name: el[0]});
+            });
             first_filter.forEach((el) => {
-                let time, cc, lc;
+                let time, cc, lc, price;
                 this.data_for_sankey.nodes.forEach((el2) => {
                     if (el.time === el2.name) {
                         time = el2.node;
@@ -759,12 +763,17 @@ export default {
                     if (el.loid === el2.name) {
                         lc = el2.node;
                     }
+                    if (el.price === el2.name) {
+                        price = el2.node;
+                    }
                 });
 
                 let data1 = {source: cc, target: lc, value: 0.5};
-                let data2 = {source: lc, target: time, value: 0.5};
+                let data2 = {source: lc, target: price, value: 0.5};
+                let data3 = {source: price, target: time, value: 0.5};
                 let flag1 = false;
                 let flag2 = false;
+                let flag3 = false
 
                 this.data_for_sankey.links.forEach((el) => {
                     if (el.source === data1.source && el.target === data1.target) {
@@ -774,6 +783,10 @@ export default {
                     if (el.source === data2.source && el.target === data2.target) {
                         el.value += 0.5;
                         flag2 = true;
+                    }
+                    if (el.source === data3.source && el.target === data3.target) {
+                        el.value += 0.5;
+                        flag3 = true;
                     }
                 });
 
@@ -787,6 +800,13 @@ export default {
                 if (!flag2) {
                     this.data_for_sankey.links.push({
                         source: lc,
+                        target: price,
+                        value: 0.5,
+                    });
+                }
+                if (!flag3) {
+                    this.data_for_sankey.links.push({
+                        source: price,
                         target: time,
                         value: 0.5,
                     });
