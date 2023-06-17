@@ -149,7 +149,8 @@
                 <p>
                     The analysis is conducted through the insertion of four different graphs.<br/>
                     The first one is a Sankey diagram which is used to trace the relationship [credit card-loyalty
-                    card-price of transaction-transaction time] between each transaction carried out during the various days.<br/>
+                    card-price of transaction-transaction time] between each transaction carried out during the various
+                    days.<br/>
                     The second one is a piechart used to show the percentages of transactions conducted with both
                     the credit card and the loyalty card, those carried out using only the credit card and those made
                     using only the loyalty card.<br/>
@@ -195,6 +196,19 @@
                         from the average.
                     </li>
                 </ol>
+                <hr class="col-12">
+                <p>
+                    By adding GPS data to the analysis, it is theoretically possible to find the people connected to a
+                    credit card and a loyalty card, observing the moments in which the person is not moving and
+                    trying to match with the transactions.
+
+                    However, there are several possible combinations: a single car id seems to match several credit
+                    cards. Here is a solution for a unique combination of car id, credit card and loyalty card.
+                </p>
+                <b-col cols="6" class="offset-3 my-5" style="max-height: 500px; overflow: auto">
+                    <b-table class="col-6" style="color: whitesmoke" :items="items"></b-table>
+                </b-col>
+
             </b-col>
         </b-row>
         <b-row class="maps pt-3">
@@ -322,7 +336,8 @@
                         coincide with the first one of the following one. -
                         <b-link href="#geospat" @click="set_map('01/06/2014', [9])">Check</b-link>
                     </li>
-                    <li><b>Nils Calixsto</b> (#1) often works overtime and then returns home after midnight from the office -
+                    <li><b>Nils Calixsto</b> (#1) often works overtime and then returns home after midnight from the
+                        office -
                         <b-link href="#geospat" @click="set_map('01/07/2014', [1])">Check</b-link>
                     </li>
                     <li>A series of suspicious shifts are visible around 3:00 am:
@@ -354,7 +369,8 @@
                         <b-link href="#geospat" @click="set_map('01/08/2014', [15,24,21])">Check2</b-link>
                     </li>
                 </ul>
-                <p class="mt-5"><b>PS:</b> purtroppo c'è stato un problema con i link di questa ultima sezione. Non avevo pensato
+                <p class="mt-5"><b>PS:</b> purtroppo c'è stato un problema con i link di questa ultima sezione. Non
+                    avevo pensato
                     originariamente di inserirli per cui ho collocato il dato dei giorni nel componente principale e
                     quello
                     dell'orario all'interno di un altro componente - quello della mappa - rendendo (da quanto ho capito)
@@ -405,6 +421,43 @@ export default {
     },
     data() {
         return {
+            items: [
+                {car: 1, creditcard: 2276, loyaltycard:"L5517"},
+                {car: 2, creditcard: 3506, loyaltycard:"L7761"},
+                {car: 3, creditcard: 4530, loyaltycard:"L8477"},
+                {car: 4, creditcard: 1286, loyaltycard:"L3572"},
+                {car: 5, creditcard: 3484, loyaltycard:"L2490"},
+                {car: 6, creditcard: 3547, loyaltycard:"L9362"},
+                {car: 7, creditcard: 3853, loyaltycard:"L1485"},
+                {car: 8, creditcard: 1415, loyaltycard:"L7783"},
+                {car: 9, creditcard: 1310, loyaltycard:"L8012"},
+                {car: 10, creditcard: 5010, loyaltycard:"L2459"},
+                {car: 11, creditcard: 7792, loyaltycard:"L5756"},
+                {car: 12, creditcard: 1877, loyaltycard:"L3014"},
+                {car: 13, creditcard: 1321, loyaltycard:"L4149"},
+                {car: 14, creditcard: 1874, loyaltycard:"L4424"},
+                {car: 15, creditcard: 6816, loyaltycard:"L8148"},
+                {car: 16, creditcard: 2142, loyaltycard:"L9637"},
+                {car: 17, creditcard: 2418, loyaltycard:"L9018"},
+                {car: 18, creditcard: 6895, loyaltycard:"L3366"},
+                {car: 19, creditcard: 8642, loyaltycard:"L2769"},
+                {car: 20, creditcard: 5921, loyaltycard:"L3259"},
+                {car: 21, creditcard: 2463, loyaltycard:"L6886"},
+                {car: 22, creditcard: 6901, loyaltycard:"L9363"},
+                {car: 23, creditcard: 9152, loyaltycard:"L5485"},
+                {car: 24, creditcard: 4434, loyaltycard:"L2169"},
+                {car: 25, creditcard: 5368, loyaltycard:"L2247"},
+                {car: 26, creditcard: 9220, loyaltycard:"L4063"},
+                {car: 27, creditcard: 2540, loyaltycard:"L5947"},
+                {car: 28, creditcard: 9735, loyaltycard:"L9633"},
+                {car: 29, creditcard: 8332, loyaltycard:"L2070"},
+                {car: 30, creditcard: 6899, loyaltycard:"L6267"},
+                {car: 31, creditcard: 5407, loyaltycard:"L4034"},
+                {car: 32, creditcard: 9614, loyaltycard:"L5924"},
+                {car: 33, creditcard: 9683, loyaltycard:"L7291"},
+                {car: 34, creditcard: 2681, loyaltycard:"L1107"},
+                {car: 35, creditcard: 9241, loyaltycard:"L3288"},
+            ],
             data_for_sankey: {},
             places_for_heatmap: [],
             data_for_heatmap: [],

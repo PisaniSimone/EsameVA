@@ -19,7 +19,7 @@
             </b-list-group>
         </b-col>
         <b-col cols="8" style="overflow: auto">
-            <svg ref="svg_map" height="733" width="1020" class="border border-dark shadow-md">
+            <svg ref="svg_map" style="height: 733px; width: 1020px;" class="border border-dark shadow-md">
                 <image
                         xlink:href="@/assets/MC2-tourist-nuova.jpg"
                         class="image_mappa"
@@ -157,41 +157,44 @@ export default {
     mounted() {
         gAbila = d3.select(this.$refs.abila);
 
-        d3.json("/data/Abila_map.geojson").then((abiladata) => {
-            const abila = abiladata;
-            const fAbila = {
-                ...abila,
-                features: abila.features,
-            };
+        setTimeout(()=>{
+            d3.json("/data/Abila_map.geojson").then((abiladata) => {
+                const abila = abiladata;
+                const fAbila = {
+                    ...abila,
+                    features: abila.features,
+                };
 
-            const extentX = d3.extent(fAbila.features, function (d) {
-                if (d.geometry != null) {
-                    return d.geometry.coordinates[0][0];
-                }
-            });
-            const extentY = d3.extent(fAbila.features, function (d) {
-                if (d.geometry != null) {
-                    return d.geometry.coordinates[0][1];
-                }
-            });
-            centroid = [(extentX[0] + extentX[1]) / 2, (extentY[0] + extentY[1]) / 2];
+                const extentX = d3.extent(fAbila.features, function (d) {
+                    if (d.geometry != null) {
+                        return d.geometry.coordinates[0][0];
+                    }
+                });
+                const extentY = d3.extent(fAbila.features, function (d) {
+                    if (d.geometry != null) {
+                        return d.geometry.coordinates[0][1];
+                    }
+                });
+                centroid = [(extentX[0] + extentX[1]) / 2, (extentY[0] + extentY[1]) / 2];
 
-            map.center(centroid).scale(scale);
-            boundaries = d3.select(this.$refs.svg_map).node().getBBox();
+                map.center(centroid).scale(scale);
+                boundaries = d3.select(this.$refs.svg_map).node().getBBox();
 
-            projection = d3
-                .geoMercator()
-                .center(centroid)
-                .scale(scale)
-                .translate([boundaries.width / 2, boundaries.height / 2]);
+                projection = d3
+                    .geoMercator()
+                    .center(centroid)
+                    .scale(scale)
+                    .translate([boundaries.width / 2, boundaries.height / 2]);
 
-            d3.select(".image_mappa")
-                .attr("width", boundaries.width)
-                .attr("height", boundaries.height)
-                .attr("x", boundaries.x)
-                .attr("y", boundaries.y);
+                d3.select(".image_mappa")
+                    .attr("width", boundaries.width)
+                    .attr("height", boundaries.height)
+                    .attr("x", boundaries.x)
+                    .attr("y", boundaries.y);
 
-            gAbila.datum(fAbila).call(map);
+                gAbila.datum(fAbila).call(map);
+        },200)
+
         });
     },
     watch: {

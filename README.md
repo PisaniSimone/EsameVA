@@ -1,6 +1,7 @@
 # Esame Visual Analytics
 ```
 La visualizzazione è ottimizzata per schermi molto grandi.
+Potrebbe essere necessario refreshare la pagina prima di poter vedere la mappa correttamente, non sono riuscito a risolvere il problema.
 ```
 
 
